@@ -124,4 +124,22 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--muted-soft);
   }
+
+  /* Mobile Ergonomics & Fast Tap */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Safe Area Utilities for Modern Mobile Devices */
+  .safe-area-pt {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  .safe-area-pb {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
 }

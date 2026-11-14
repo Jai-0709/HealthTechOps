@@ -163,12 +163,12 @@ export function Automation() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl">
+        <div className="flex items-center gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl w-full sm:w-auto overflow-x-auto touch-pan-x">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex items-center gap-2 px-4 py-2 text-xs rounded-lg transition-all font-medium ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs rounded-lg transition-all font-medium whitespace-nowrap flex-shrink-0 cursor-pointer ${
                 tab === t
                   ? 'bg-[var(--surface-card)] text-[var(--ink)] shadow-xs border border-[var(--hairline)]'
                   : 'text-[var(--muted)] hover:text-[var(--ink)]'

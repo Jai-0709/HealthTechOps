@@ -97,7 +97,7 @@ export function AIInvestigation() {
 
       {/* Main Grid: Incident Selector (Left) + Dark Obsidian AI Terminal (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Incident Queue (5 cols) */}
+        {/* Left: Incident Queue (Desktop vertical, Mobile horizontal swipe carousel) */}
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider font-medium text-[var(--muted)]">
@@ -108,7 +108,44 @@ export function AIInvestigation() {
             </span>
           </div>
 
-          <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
+          {/* Mobile Horizontal Carousel (lg:hidden) */}
+          <div className="lg:hidden flex gap-2.5 overflow-x-auto pb-2 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 touch-pan-x">
+            {incidents?.map((i) => {
+              const isCurrent = selectedId === i.id
+              return (
+                <button
+                  key={i.id}
+                  onClick={() => {
+                    setSelectedId(i.id)
+                    setInvId('')
+                  }}
+                  className={`w-64 flex-shrink-0 text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    isCurrent
+                      ? 'border-[var(--primary)] bg-[var(--surface-card)] shadow-xs ring-2 ring-[var(--primary)]/20'
+                      : 'border-[var(--hairline)] bg-[var(--surface-soft)]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <SeverityBadge severity={i.severity} />
+                    <span className="text-[10px] font-mono text-[var(--muted)]">
+                      {formatDate(i.detected_at)}
+                    </span>
+                  </div>
+                  <h4 className="text-xs font-medium text-[var(--ink)] line-clamp-2 leading-snug">
+                    {i.title}
+                  </h4>
+                  {i.service_name && (
+                    <div className="text-[10px] font-mono text-[var(--muted)] mt-1.5">
+                      svc: <span className="text-[var(--body)] font-medium">{i.service_name}</span>
+                    </div>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Desktop Vertical Scroll List (hidden lg:block) */}
+          <div className="hidden lg:block space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
             {!incidents?.length ? (
               <div className="p-8 text-center text-sm text-[var(--muted)] border border-[var(--hairline)] rounded-xl bg-[var(--surface-soft)]">
                 Zero incidents in queue
@@ -123,7 +160,7 @@ export function AIInvestigation() {
                       setSelectedId(i.id)
                       setInvId('')
                     }}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-150 ${
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-150 cursor-pointer ${
                       isCurrent
                         ? 'border-[var(--primary)] bg-[var(--surface-card)] shadow-xs ring-1 ring-[var(--primary)]/20'
                         : 'border-[var(--hairline)] bg-[var(--surface-soft)] hover:border-[var(--muted-soft)] hover:bg-[var(--surface-card)]'

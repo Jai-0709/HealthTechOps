@@ -170,39 +170,73 @@ export function Overview() {
               <p className="text-xs text-[var(--muted)] mt-1">All synthetic microservices are operating normally within SLO thresholds.</p>
             </div>
           ) : (
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Incident</Th>
-                  <Th>Severity</Th>
-                  <Th>Status</Th>
-                  <Th>Detected At</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+            <>
+              {/* Mobile Recent Incidents Cards (Senior Mobile UX) */}
+              <div className="md:hidden space-y-2.5 pt-2">
                 {data.recent_incidents.map((i: any) => (
-                  <Tr key={i.id} onClick={() => navigate(`/incidents/${i.id}`)}>
-                    <Td>
-                      <div className="font-medium text-[var(--ink)] leading-snug">{i.title}</div>
-                      {i.service_name && (
-                        <div className="text-[11px] font-mono text-[var(--muted)] mt-0.5">
-                          svc: {i.service_name}
-                        </div>
-                      )}
-                    </Td>
-                    <Td>
-                      <SeverityBadge severity={i.severity} />
-                    </Td>
-                    <Td>
-                      <StatusBadge status={i.status} />
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)]">
-                      {formatDate(i.detected_at)}
-                    </Td>
-                  </Tr>
+                  <div
+                    key={i.id}
+                    onClick={() => navigate(`/incidents/${i.id}`)}
+                    className="p-3.5 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] active:scale-[0.98] transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <SeverityBadge severity={i.severity} />
+                        <StatusBadge status={i.status} />
+                      </div>
+                      <span className="text-[10px] font-mono text-[var(--muted)]">
+                        {formatDate(i.detected_at)}
+                      </span>
+                    </div>
+                    <div className="font-medium text-xs sm:text-sm text-[var(--ink)] leading-snug">
+                      {i.title}
+                    </div>
+                    {i.service_name && (
+                      <div className="text-[10px] font-mono text-[var(--muted)] mt-1.5">
+                        svc: <span className="text-[var(--ink)] font-medium">{i.service_name}</span>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </Tbody>
-            </Table>
+              </div>
+
+              {/* Desktop Recent Incidents Table */}
+              <div className="hidden md:block">
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>Incident</Th>
+                      <Th>Severity</Th>
+                      <Th>Status</Th>
+                      <Th>Detected At</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data.recent_incidents.map((i: any) => (
+                      <Tr key={i.id} onClick={() => navigate(`/incidents/${i.id}`)}>
+                        <Td>
+                          <div className="font-medium text-[var(--ink)] leading-snug">{i.title}</div>
+                          {i.service_name && (
+                            <div className="text-[11px] font-mono text-[var(--muted)] mt-0.5">
+                              svc: {i.service_name}
+                            </div>
+                          )}
+                        </Td>
+                        <Td>
+                          <SeverityBadge severity={i.severity} />
+                        </Td>
+                        <Td>
+                          <StatusBadge status={i.status} />
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)]">
+                          {formatDate(i.detected_at)}
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </div>
+            </>
           )}
         </Card>
       </div>

@@ -3,6 +3,7 @@ import { Outlet, Navigate, useSearchParams, useLocation } from 'react-router-dom
 import { useAuthStore } from '../../stores/authStore'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
+import { BottomNav } from './BottomNav'
 
 export function AppShell() {
   const { isAuthenticated, login } = useAuthStore()
@@ -28,7 +29,7 @@ export function AppShell() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[var(--canvas)]">
-      {/* Responsive Sidebar & Mobile Drawer */}
+      {/* Responsive Sidebar & Slide-over Drawer */}
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
@@ -38,10 +39,14 @@ export function AppShell() {
 
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <Header onOpenMobile={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
+        {/* Main Content Area with generous bottom padding on mobile for BottomNav */}
+        <main className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-8 pb-24 md:pb-8">
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile Ergonomic Bottom Navigation Bar */}
+      <BottomNav onOpenMore={() => setMobileOpen(true)} />
     </div>
   )
 }

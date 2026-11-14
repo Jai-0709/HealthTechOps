@@ -89,14 +89,14 @@ export function AuditLogs() {
       </div>
 
       {/* Filter Row */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[240px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+        <div className="relative flex-1">
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search action, resource, or details..."
-            className="w-full pl-9 pr-4 py-2 text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-lg transition-all focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+            className="w-full pl-9 pr-4 py-2.5 sm:py-2 text-base sm:text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-xl sm:rounded-lg transition-all focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
           />
         </div>
 
@@ -104,11 +104,11 @@ export function AuditLogs() {
           value={userFilter}
           onChange={(e) => setUserFilter(e.target.value)}
           placeholder="Filter by operator email..."
-          className="px-3.5 py-2 text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-lg focus:outline-none focus:border-[var(--primary)]"
+          className="px-3.5 py-2.5 sm:py-2 text-base sm:text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-xl sm:rounded-lg focus:outline-none focus:border-[var(--primary)]"
         />
       </div>
 
-      {/* Audit Log Table */}
+      {/* Audit Log Container */}
       <Card>
         <CardHeader>
           <div>
@@ -131,43 +131,18 @@ export function AuditLogs() {
             />
           </div>
         ) : (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Timestamp</Th>
-                <Th>Operator</Th>
-                <Th>Action</Th>
-                <Th>Resource</Th>
-                <Th>Outcome</Th>
-                <Th>Details</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <>
+            {/* Mobile Audit Cards (Senior Mobile UX) */}
+            <div className="md:hidden space-y-2.5 p-3">
               {filtered.map((log) => (
-                <Tr key={log.id}>
-                  <Td className="text-xs font-mono text-[var(--muted)] whitespace-nowrap">
-                    {new Date(log.timestamp).toLocaleString()}
-                  </Td>
-                  <Td>
-                    <div className="text-xs font-medium text-[var(--ink)] leading-snug">
-                      {log.user_email}
-                    </div>
-                    <div className="text-[10px] font-mono text-[var(--muted)] uppercase">
-                      {log.user_role}
-                    </div>
-                  </Td>
-                  <Td>
-                    <code className="text-xs font-mono text-[var(--primary)] font-medium">
-                      {log.action}
-                    </code>
-                  </Td>
-                  <Td className="text-xs font-mono text-[var(--body)]">
-                    {log.resource_type}
-                    {log.resource_id && (
-                      <span className="text-[var(--muted)]"> #{log.resource_id.slice(0, 8)}</span>
-                    )}
-                  </Td>
-                  <Td>
+                <div
+                  key={log.id}
+                  className="p-3.5 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-mono text-[var(--muted)]">
+                      {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {new Date(log.timestamp).toLocaleDateString()}
+                    </span>
                     <Badge
                       variant={
                         log.outcome === 'success'
@@ -179,14 +154,87 @@ export function AuditLogs() {
                     >
                       {log.outcome.toUpperCase()}
                     </Badge>
-                  </Td>
-                  <Td className="text-xs text-[var(--muted)] max-w-sm truncate">
-                    {log.details || '—'}
-                  </Td>
-                </Tr>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <code className="text-xs font-mono text-[var(--primary)] font-semibold">
+                      {log.action}
+                    </code>
+                    <span className="text-[11px] font-mono text-[var(--body)]">
+                      {log.resource_type}
+                    </span>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-[var(--hairline)]/60 text-[11px] text-[var(--muted)] flex items-center justify-between">
+                    <span>{log.user_email}</span>
+                    <span className="font-mono uppercase text-[9px] px-1.5 py-0.5 rounded bg-[var(--surface-card)] border border-[var(--hairline)]">
+                      {log.user_role}
+                    </span>
+                  </div>
+                </div>
               ))}
-            </Tbody>
-          </Table>
+            </div>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>Timestamp</Th>
+                    <Th>Operator</Th>
+                    <Th>Action</Th>
+                    <Th>Resource</Th>
+                    <Th>Outcome</Th>
+                    <Th>Details</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filtered.map((log) => (
+                    <Tr key={log.id}>
+                      <Td className="text-xs font-mono text-[var(--muted)] whitespace-nowrap">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </Td>
+                      <Td>
+                        <div className="text-xs font-medium text-[var(--ink)] leading-snug">
+                          {log.user_email}
+                        </div>
+                        <div className="text-[10px] font-mono text-[var(--muted)] uppercase">
+                          {log.user_role}
+                        </div>
+                      </Td>
+                      <Td>
+                        <code className="text-xs font-mono text-[var(--primary)] font-medium">
+                          {log.action}
+                        </code>
+                      </Td>
+                      <Td className="text-xs font-mono text-[var(--body)]">
+                        {log.resource_type}
+                        {log.resource_id && (
+                          <span className="text-[var(--muted)]"> #{log.resource_id.slice(0, 8)}</span>
+                        )}
+                      </Td>
+                      <Td>
+                        <Badge
+                          variant={
+                            log.outcome === 'success'
+                              ? 'success'
+                              : log.outcome === 'failure'
+                              ? 'danger'
+                              : 'warning'
+                          }
+                        >
+                          {log.outcome.toUpperCase()}
+                        </Badge>
+                      </Td>
+                      <Td className="text-xs text-[var(--muted)] max-w-sm truncate">
+                        {log.details || '—'}
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </div>
+          </>
         )}
       </Card>
     </div>

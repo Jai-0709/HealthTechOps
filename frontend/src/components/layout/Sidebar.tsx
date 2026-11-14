@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Radio,
 } from 'lucide-react'
 
 const NAV = [
@@ -25,9 +26,9 @@ const NAV = [
   { to: '/observability', icon: Activity, label: 'Observability' },
   { to: '/incidents', icon: AlertTriangle, label: 'Incidents' },
   { to: '/ai-investigation', icon: Bot, label: 'AI Investigation' },
-  { to: '/automation', icon: Wrench, label: 'Automation' },
+  { to: '/automation', icon: Wrench, label: 'Automation & Runbooks' },
   { to: '/reliability', icon: Target, label: 'Reliability & SLO' },
-  { to: '/ai-evaluation', icon: FlaskConical, label: 'AI Evaluation' },
+  { to: '/ai-evaluation', icon: FlaskConical, label: 'AI Benchmark & Eval' },
   { to: '/audit-logs', icon: ScrollText, label: 'Audit Logs' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]
@@ -54,33 +55,38 @@ export function Sidebar({
         />
       )}
 
-      {/* Mobile Slide-Out Drawer */}
+      {/* Mobile Slide-Out Drawer (Senior Mobile Ergonomics) */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-72 bg-[var(--surface-soft)] border-r border-[var(--hairline)] flex flex-col transition-transform duration-300 ease-in-out md:hidden shadow-2xl',
+          'fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] bg-[var(--surface-soft)] border-r border-[var(--hairline)] flex flex-col transition-transform duration-300 ease-in-out md:hidden shadow-2xl safe-area-pt safe-area-pb',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        {/* Mobile Header with Close Button */}
+        {/* Mobile Drawer Header with Close Button */}
         <div className="flex items-center justify-between h-16 border-b border-[var(--hairline)] px-4 flex-shrink-0">
-          <BrandLogo size="md" showText={true} />
+          <BrandLogo size="md" showText={true} subtitle="Navigation Menu" />
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95 cursor-pointer"
             aria-label="Close navigation"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Notice Pill */}
-        <div className="mx-3 my-2.5 px-2.5 py-1 bg-amber-100/90 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 rounded-full flex items-center justify-center gap-1.5 text-[11px] font-medium text-amber-900 dark:text-amber-300">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
-          <span>SYNTHETIC ENVIRONMENT</span>
+        {/* Live Operational Status Indicator */}
+        <div className="mx-4 my-3 p-3 bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Radio size={14} className="text-[#5db872] animate-pulse" />
+            <span className="text-xs font-medium text-[var(--ink)]">AIOps Telemetry Stream</span>
+          </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#5db872]/15 text-[#2e7d32] dark:text-[#81c784] font-semibold">
+            ONLINE
+          </span>
         </div>
 
-        {/* Mobile Nav Links */}
-        <nav className="flex-1 py-3 px-3 overflow-y-auto space-y-1">
+        {/* Mobile Navigation List with large touch targets */}
+        <nav className="flex-1 py-2 px-3 overflow-y-auto space-y-1">
           {NAV.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
@@ -89,9 +95,9 @@ export function Sidebar({
               onClick={onCloseMobile}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm transition-all duration-150',
+                  'flex items-center gap-3.5 py-3 px-3.5 rounded-xl text-sm transition-all duration-150 active:scale-[0.98]',
                   isActive
-                    ? 'bg-[#e8e0d2] dark:bg-[#252320] text-[var(--ink)] font-semibold border-l-3 border-[var(--primary)] shadow-xs'
+                    ? 'bg-[#e8e0d2] dark:bg-[#252320] text-[var(--ink)] font-semibold border-l-4 border-[var(--primary)] shadow-xs'
                     : 'text-[var(--body)] hover:bg-[var(--surface-card)] hover:text-[var(--ink)]'
                 )
               }
@@ -120,7 +126,7 @@ export function Sidebar({
           collapsed ? 'w-16' : 'w-60'
         )}
       >
-        {/* Brand Header */}
+        {/* Desktop Brand Header */}
         <div
           className={cn(
             'flex items-center h-16 border-b border-[var(--hairline)] flex-shrink-0 px-4',
@@ -130,11 +136,16 @@ export function Sidebar({
           <BrandLogo size="md" showText={!collapsed} />
         </div>
 
-        {/* Synthetic Notice Pill */}
+        {/* Desktop Status Pill */}
         {!collapsed && (
-          <div className="mx-3 my-2.5 px-2.5 py-1 bg-amber-100/90 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 rounded-full flex items-center justify-center gap-1.5 text-[11px] font-medium text-amber-900 dark:text-amber-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
-            <span>SYNTHETIC ENVIRONMENT</span>
+          <div className="mx-3 my-2.5 px-3 py-1 bg-[var(--surface-card)] border border-[var(--hairline)] rounded-lg flex items-center justify-between text-[11px]">
+            <span className="flex items-center gap-1.5 text-[var(--muted)] font-mono text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5db872] animate-pulse" />
+              SRE ENGINE
+            </span>
+            <span className="font-mono text-[10px] text-[#2e7d32] dark:text-[#81c784] font-semibold">
+              ACTIVE
+            </span>
           </div>
         )}
 
@@ -172,12 +183,12 @@ export function Sidebar({
           ))}
         </nav>
 
-        {/* Collapse / Expand Footer */}
+        {/* Desktop Collapse / Expand Footer */}
         <div className="p-2 border-t border-[var(--hairline)] flex-shrink-0">
           <button
             onClick={onToggle}
             className={cn(
-              'flex items-center justify-center w-full h-9 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors text-xs font-medium',
+              'flex items-center justify-center w-full h-9 rounded-lg text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors text-xs font-medium cursor-pointer',
               collapsed ? 'px-0' : 'gap-2 px-3 justify-start'
             )}
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}

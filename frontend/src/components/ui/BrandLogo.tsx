@@ -1,61 +1,107 @@
 import { cn } from '../../lib/utils'
 
 interface BrandLogoProps {
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   showText?: boolean
+  subtitle?: string
 }
 
-export function BrandLogo({ size = 'md', className, showText = false }: BrandLogoProps) {
-  const dims = size === 'sm' ? 'w-6 h-6' : size === 'lg' ? 'w-10 h-10' : 'w-7 h-7'
-  const iconPx = size === 'sm' ? 14 : size === 'lg' ? 24 : 16
+export function BrandLogo({
+  size = 'md',
+  className,
+  showText = false,
+  subtitle = 'Cloud Reliability Platform',
+}: BrandLogoProps) {
+  const dims =
+    size === 'sm'
+      ? 'w-7 h-7'
+      : size === 'lg'
+      ? 'w-11 h-11'
+      : size === 'xl'
+      ? 'w-14 h-14'
+      : 'w-8 h-8'
+
+  const iconPx =
+    size === 'sm' ? 18 : size === 'lg' ? 28 : size === 'xl' ? 36 : 22
 
   return (
-    <div className={cn('inline-flex items-center gap-2.5', className)}>
+    <div className={cn('inline-flex items-center gap-3 select-none', className)}>
+      {/* Brand Icon Badge with Gradient & Isometric Shield Core */}
       <div
         className={cn(
           dims,
-          'rounded-lg bg-[#cc785c] text-white flex items-center justify-center flex-shrink-0 shadow-sm transition-transform duration-200'
+          'relative rounded-xl bg-gradient-to-br from-[#d97757] via-[#cc785c] to-[#a6563b] text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-[#cc785c]/25 border border-white/20 transition-transform duration-200 hover:scale-105 active:scale-95'
         )}
       >
-        {/* Geometric 4-Spoke Radial Pulse Cross (Health + Tech precision) */}
+        {/* Subtle Ambient Radial Highlight */}
+        <div className="absolute inset-0 rounded-xl bg-radial from-white/25 via-transparent to-black/10 pointer-events-none" />
+
+        {/* Custom HealthTechOps Brandmark SVG:
+            Combines Healthcare Cross + Vital Heartbeat Pulse Wave + Cloud Telemetry Node */}
         <svg
           width={iconPx}
           height={iconPx}
-          viewBox="0 0 24 24"
+          viewBox="0 0 32 32"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className="relative z-10 drop-shadow-xs"
         >
-          {/* Vertical axis with tapered tips */}
+          {/* Subtle Outer Hex Shield Orbit */}
           <path
-            d="M12 2C12.5523 2 13 4.5 13 8V16C13 19.5 12.5523 22 12 22C11.4477 22 11 19.5 11 16V8C11 4.5 11.4477 2 12 2Z"
-            fill="currentColor"
+            d="M16 3L27 9V23L16 29L5 23V9L16 3Z"
+            stroke="rgba(255, 255, 255, 0.45)"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          {/* Horizontal axis with tapered tips */}
+
+          {/* Symmetrical Medical Cross Pillars (translucent base) */}
           <path
-            d="M2 12C2 11.4477 4.5 11 8 11H16C19.5 11 22 11.4477 22 12C22 12.5523 19.5 13 16 13H8C4.5 13 2 12.5523 2 12Z"
-            fill="currentColor"
+            d="M14 8H18V24H14V8Z"
+            fill="white"
+            fillOpacity="0.22"
           />
-          {/* Central high-frequency pulse node */}
-          <circle cx="12" cy="12" r="3" fill="#181715" />
-          <circle cx="12" cy="12" r="1.5" fill="#faf9f5" />
+          <path
+            d="M8 14H24V18H8V14Z"
+            fill="white"
+            fillOpacity="0.22"
+          />
+
+          {/* Dynamic Vital Pulse / Telemetry Waveform */}
+          <path
+            d="M6 16H10.5L13 10.5L16 21.5L19 12L21 16H26"
+            stroke="#ffffff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Central Active Monitoring Pulse Node */}
+          <circle cx="16" cy="16" r="2.2" fill="#faf9f5" />
+          <circle cx="16" cy="16" r="1.1" fill="#cc785c" />
         </svg>
       </div>
 
       {showText && (
-        <div className="flex flex-col">
-          <span
-            className="text-lg font-normal tracking-tight text-[var(--ink)] leading-none"
-            style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-          >
-            HealthTechOps
-          </span>
-          <span className="text-[10px] tracking-wider uppercase text-[var(--muted)] font-medium mt-0.5">
-            Reliability Platform
+        <div className="flex flex-col text-left">
+          <div className="flex items-center gap-1.5">
+            <span
+              className={cn(
+                'font-normal tracking-tight text-[var(--ink)] leading-none',
+                size === 'lg' || size === 'xl' ? 'text-2xl' : 'text-lg'
+              )}
+              style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
+            >
+              HealthTechOps
+            </span>
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#5db872] animate-pulse" />
+          </div>
+          <span className="text-[10px] tracking-wider uppercase text-[var(--muted)] font-medium mt-1">
+            {subtitle}
           </span>
         </div>
       )}
     </div>
   )
 }
-
