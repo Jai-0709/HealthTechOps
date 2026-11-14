@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@import '@fontsource-variable/inter';
+
+@layer base {
+  :root {
+    /* Warm Canvas Editorial System (DESIGN.md Authority) */
+    --canvas: #faf9f5;
+    --surface-soft: #f5f0e8;
+    --surface-card: #efe9de;
+    --surface-cream-strong: #e8e0d2;
+    --surface-elevated: #ffffff;
+    --surface-dark: #181715;
+    --surface-dark-elevated: #252320;
+    --surface-dark-soft: #1f1e1b;
+    --on-dark: #faf9f5;
+    --on-dark-soft: #a09d96;
+
+    /* Coral Identity */
+    --primary: #cc785c;
+    --primary-hover: #b8673d;
+    --primary-active: #a9583e;
+    --primary-disabled: #e6dfd8;
+    --on-primary: #ffffff;
+
+    /* Typographic Ink */
+    --ink: #141413;
+    --body: #3d3d3a;
+    --body-strong: #252523;
+    --muted: #6c6a64;
+    --muted-soft: #8e8b82;
+    --hairline: #e6dfd8;
+    --hairline-soft: #ebe6df;
+
+    /* Semantic Accents */
+    --accent-teal: #5db8a6;
+    --accent-amber: #e8a55a;
+    --success: #5db872;
+    --warning: #d4a017;
+    --error: #c64545;
+    --success-bg: #f0fdf4;
+    --warning-bg: #fefce8;
+    --error-bg: #fef2f2;
+  }
+
+  .dark {
+    /* Dark Surface Mode (DESIGN.md Dark Rhythm) */
+    --canvas: #181715;
+    --surface-soft: #1f1e1b;
+    --surface-card: #252320;
+    --surface-cream-strong: #2e2b27;
+    --surface-elevated: #252320;
+    --surface-dark: #141413;
+    --surface-dark-elevated: #1f1e1b;
+    --surface-dark-soft: #181715;
+    --on-dark: #faf9f5;
+    --on-dark-soft: #a09d96;
+
+    /* Coral Identity in Dark */
+    --primary: #cc785c;
+    --primary-hover: #d4855a;
+    --primary-active: #a9583e;
+    --primary-disabled: #3a3630;
+    --on-primary: #ffffff;
+
+    /* Typographic Ink in Dark */
+    --ink: #faf9f5;
+    --body: #c8c4bc;
+    --body-strong: #e6dfd8;
+    --muted: #a09d96;
+    --muted-soft: #78756e;
+    --hairline: #2e2b27;
+    --hairline-soft: #252320;
+
+    /* Semantic Accents in Dark */
+    --accent-teal: #5db8a6;
+    --accent-amber: #e8a55a;
+    --success: #5db872;
+    --warning: #d4a017;
+    --error: #e05454;
+    --success-bg: #052e16;
+    --warning-bg: #422006;
+    --error-bg: #450a0a;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--canvas);
+    color: var(--body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  /* Editorial Display Typography (Unbreakable Rule: 400 weight serif) */
+  h1, h2, .serif-heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  /* Custom subtle scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--hairline);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-soft);
+  }
+}

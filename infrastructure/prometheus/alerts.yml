@@ -1,0 +1,26 @@
+groups:
+  - name: healthtechops
+    rules:
+      - alert: ServiceDown
+        expr: healthtechops_service_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.service }} is down"
+      
+      - alert: HighCPU
+        expr: healthtechops_cpu_usage_percent > 85
+        for: 2m
+        labels:
+          severity: high
+        annotations:
+          summary: "CPU usage above 85%"
+      
+      - alert: HighMemory
+        expr: healthtechops_memory_usage_percent > 85
+        for: 2m
+        labels:
+          severity: high
+        annotations:
+          summary: "Memory usage above 85%"
