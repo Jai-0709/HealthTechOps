@@ -1,7 +1,7 @@
 # HealthTechOps — Project Status
 
-> **SYNTHETIC ENVIRONMENT** — This is a portfolio/demonstration project for Optum IEDP. Not an official Optum product.
-> All data is synthetic. No real patient records or PHI.
+> **HealthTechOps** — Autonomous Cloud Reliability & AI Incident Operations Platform.
+> All healthcare telemetry and services are simulated for production reliability benchmarking.
 
 Last Updated: 2026-11-14
 

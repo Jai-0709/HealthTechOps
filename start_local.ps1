@@ -1,5 +1,5 @@
-# HealthTechOps — Local Development Startup Script
-# SYNTHETIC ENVIRONMENT — Not an official Optum product
+﻿# HealthTechOps — Local Development Startup Script
+# Autonomous Cloud Reliability & AI Operations Platform
 # 
 # Usage: .\start_local.ps1
 # Opens 4 separate terminal windows for all services.
@@ -9,7 +9,7 @@ $ErrorActionPreference = "Stop"
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "  HealthTechOps — Starting Local Development Environment" -ForegroundColor Cyan
-Write-Host "  SYNTHETIC ENVIRONMENT — Not an official Optum product" -ForegroundColor Yellow
+Write-Host "  Autonomous Cloud Reliability & AI Operations Platform" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 

@@ -1,6 +1,6 @@
 # HealthTechOps — AI-Powered Cloud Reliability & Incident Operations Platform
 
-> **Disclaimer:** This is a personal portfolio / learning project. It is **not** an Optum product, not affiliated with UnitedHealth Group, and uses **entirely synthetic, randomly-generated data**. No real patient data, PHI, or proprietary business data is present anywhere in this repository.
+> **Autonomous Cloud Reliability & AI Operations Platform** — Real-time infrastructure observability, synthetic healthcare microservice topology, and local LLM root-cause analysis with guardrailed human-in-the-loop remediation.
 
 ---
 

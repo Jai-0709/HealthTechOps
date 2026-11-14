@@ -1,7 +1,7 @@
 """
 HealthTechOps Backend — FastAPI Application
 AI-powered cloud reliability & autonomous incident operations platform.
-All data is SYNTHETIC. Not an official Optum product.
+All healthcare telemetry and microservices are synthetic.
 """
 import logging
 import uuid
@@ -279,7 +279,7 @@ def seed_database():
 async def lifespan(app: FastAPI):
     logger.info("=" * 50)
     logger.info("HealthTechOps Backend starting...")
-    logger.info("SYNTHETIC ENVIRONMENT — not an official Optum product")
+    logger.info("HealthTechOps — Autonomous Cloud Reliability & AI Operations")
     if settings.JWT_SECRET_KEY.startswith("supersecretkey"):
         logger.warning("SECURITY NOTICE: Using development JWT_SECRET_KEY. Set a secure key in .env for production.")
     logger.info("=" * 50)

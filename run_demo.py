@@ -19,7 +19,7 @@ SVC_BASE = "http://localhost:8010"
 
 print("=" * 70)
 print("  HealthTechOps — Full Synthetic Incident Demonstration")
-print("  SYNTHETIC ENVIRONMENT — Optum IEDP Portfolio Simulation")
+print("  Autonomous Cloud Reliability & AI Operations Platform")
 print("=" * 70)
 
 # Step 0: Authenticate as Admin
