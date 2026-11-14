@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Sun, Moon, LogOut, Search, User } from 'lucide-react'
+import { Bell, Sun, Moon, LogOut, Search, User, Menu } from 'lucide-react'
 import { useAuthStore } from '../../stores/authStore'
 import { useThemeStore } from '../../stores/themeStore'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../api/client'
+import { BrandLogo } from '../ui/BrandLogo'
 
-export function Header() {
+export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
   const navigate = useNavigate()
   const { user, logout } = useAuthStore()
   const { theme, toggle } = useThemeStore()
@@ -19,13 +20,6 @@ export function Header() {
   })
 
   const health = (overview?.system_health ?? 'UNKNOWN').toUpperCase()
-  const statusColor =
-    health === 'HEALTHY'
-      ? 'bg-[#5db872] text-[#2e7d32] dark:text-[#81c784]'
-      : health === 'DEGRADED'
-      ? 'bg-[#e8a55a] text-[#b25e00] dark:text-[#ffb74d]'
-      : 'bg-[#c64545] text-[#c64545] dark:text-[#ef5350]'
-
   const dotColor =
     health === 'HEALTHY'
       ? 'bg-[#5db872]'
@@ -34,28 +28,43 @@ export function Header() {
       : 'bg-[#c64545]'
 
   return (
-    <header className="h-16 flex items-center justify-between px-6 bg-[var(--canvas)] border-b border-[var(--hairline)] flex-shrink-0 z-10">
-      {/* Global Search */}
-      <div className="relative w-80 hidden md:block">
-        <Search
-          size={14}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none"
-        />
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && search.trim()) {
-              navigate(`/incidents?search=${encodeURIComponent(search.trim())}`)
-            }
-          }}
-          placeholder="Search services, incidents, runbooks... (Press Enter)"
-          className="w-full pl-9 pr-4 py-2 text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-lg transition-all focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
-        />
+    <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-[var(--canvas)] border-b border-[var(--hairline)] flex-shrink-0 z-10">
+      {/* Left section: Mobile Hamburger + Mobile Brand */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onOpenMobile}
+          className="md:hidden p-2 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95"
+          aria-label="Open mobile navigation menu"
+        >
+          <Menu size={18} />
+        </button>
+
+        <div className="md:hidden flex items-center gap-2">
+          <BrandLogo size="sm" showText={true} />
+        </div>
+
+        {/* Global Search (Desktop only) */}
+        <div className="relative w-80 hidden md:block">
+          <Search
+            size={14}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none"
+          />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && search.trim()) {
+                navigate(`/incidents?search=${encodeURIComponent(search.trim())}`)
+              }
+            }}
+            placeholder="Search services, incidents, runbooks... (Press Enter)"
+            className="w-full pl-9 pr-4 py-2 text-sm bg-[var(--surface-soft)] text-[var(--ink)] placeholder:text-[var(--muted-soft)] border border-[var(--hairline)] rounded-lg transition-all focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
+          />
+        </div>
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-3 ml-auto">
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
         {/* System Health Status Indicator */}
         <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--hairline)] bg-[var(--surface-soft)] text-xs text-[var(--body)]">
           <span className="relative flex h-2 w-2">
@@ -89,7 +98,7 @@ export function Header() {
         </button>
 
         {/* User Identity Pill */}
-        <div className="flex items-center gap-3 pl-3 border-l border-[var(--hairline)]">
+        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-[var(--hairline)]">
           <div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-medium text-xs flex-shrink-0 shadow-xs">
             {user?.full_name ? user.full_name.charAt(0).toUpperCase() : <User size={14} />}
           </div>

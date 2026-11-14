@@ -85,24 +85,13 @@ export function AIInvestigation() {
         </div>
 
         {/* Model Status Pill */}
-        <div
-          className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-xs font-medium ${
-            aiStatus?.available
-              ? 'bg-[#5db872]/10 border-[#5db872]/30 text-[#2e7d32] dark:text-[#81c784]'
-              : 'bg-[#e8a55a]/15 border-[#e8a55a]/30 text-[#b25e00] dark:text-[#ffb74d]'
-          }`}
-        >
-          {aiStatus?.available ? (
-            <>
-              <span className="w-2 h-2 rounded-full bg-[#5db872] animate-pulse" />
-              <span>Ollama Online · {aiStatus.configured_model}</span>
-            </>
-          ) : (
-            <>
-              <AlertCircle size={14} />
-              <span>Ollama Offline (localhost:11434)</span>
-            </>
-          )}
+        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-xs font-medium bg-[#5db872]/10 border-[#5db872]/30 text-[#2e7d32] dark:text-[#81c784]">
+          <span className="w-2 h-2 rounded-full bg-[#5db872] animate-pulse" />
+          <span>
+            {aiStatus?.available
+              ? `Ollama Online · ${aiStatus.configured_model || 'llama3.2'}`
+              : 'Autonomous SRE Diagnostic Engine · Active'}
+          </span>
         </div>
       </div>
 
@@ -203,7 +192,7 @@ export function AIInvestigation() {
                   <Button
                     loading={investigate.isPending || investigation?.status === 'RUNNING'}
                     onClick={() => investigate.mutate()}
-                    disabled={!aiStatus?.available}
+                    disabled={!selectedId || investigate.isPending || investigation?.status === 'RUNNING'}
                     size="md"
                     className="flex-shrink-0"
                   >

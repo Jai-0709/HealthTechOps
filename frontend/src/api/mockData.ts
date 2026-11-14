@@ -187,17 +187,26 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
       latency_ms: 245,
     } as T
   }
+  if (clean === '/ai/investigate' && method === 'POST') {
+    return {
+      id: 'inv-001',
+      investigation_id: 'inv-001',
+      status: 'COMPLETED',
+    } as T
+  }
   if (clean === '/ai/investigate' || clean.startsWith('/ai/investigate/')) {
     return {
       id: 'inv-001',
+      investigation_id: 'inv-001',
       incident_id: 'inc-001',
       model_name: 'llama3.2',
       status: 'COMPLETED',
-      root_cause_summary: 'Sustained thread blockage observed in connection pooling layer following high-volume prescription batch dispatch. Recommend connection pool flush and service replica scale up.',
+      root_cause_summary:
+        'Sustained thread blockage observed in connection pooling layer following high-volume batch dispatch. Recommend connection pool flush and service replica scale up.',
       evidence_items: [
         'P95 latency elevated to 180.5ms (target: 100ms)',
         'Active database pool connections saturated at 98%',
-        'No hardware memory leak detected on container host',
+        'Zero container hardware crashes observed across worker nodes',
       ],
       recommended_actions: ['flush_connection_pool', 'restart_service', 'scale_up_replicas'],
       confidence_score: 0.94,
@@ -207,6 +216,15 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
   }
 
   // Remediation
+  if (clean === '/remediation/request') {
+    return {
+      id: `rem-${Date.now()}`,
+      action_name: 'restart_service',
+      risk_level: 'MEDIUM',
+      status: 'PENDING_APPROVAL',
+      requested_at: new Date().toISOString(),
+    } as T
+  }
   if (clean === '/remediation/pending') {
     return MOCK_REMEDIATION_PENDING as T
   }
@@ -317,3 +335,4 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
 
   return undefined
 }
+
