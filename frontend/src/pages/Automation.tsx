@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
-import { StatusBadge, Badge } from '../components/ui/Badge'
+import { StatusBadge, Badge, RiskBadge, PolicyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -30,28 +30,10 @@ function RunbookRow({ rb, onExecute, isExecuting }: { rb: any; onExecute(id: str
           </div>
         </Td>
         <Td>
-          <Badge
-            variant={
-              rb.risk_level === 'HIGH'
-                ? 'danger'
-                : rb.risk_level === 'MEDIUM'
-                ? 'warning'
-                : 'success'
-            }
-          >
-            {rb.risk_level}
-          </Badge>
+          <RiskBadge level={rb.risk_level} />
         </Td>
         <Td>
-          <span
-            className={`text-xs px-2.5 py-0.5 rounded-full font-mono border ${
-              rb.is_allowlisted
-                ? 'bg-[#5db872]/15 text-[#2e7d32] border-[#5db872]/30 dark:text-[#81c784]'
-                : 'bg-[var(--surface-card)] text-[var(--muted)] border-[var(--hairline)]'
-            }`}
-          >
-            {rb.is_allowlisted ? '✓ Allowlisted' : 'Manual Approval'}
-          </span>
+          <PolicyBadge isAllowlisted={rb.is_allowlisted} />
         </Td>
         <Td className="text-xs font-mono text-[var(--muted)]">{rb.service_type || 'all'}</Td>
         <Td>

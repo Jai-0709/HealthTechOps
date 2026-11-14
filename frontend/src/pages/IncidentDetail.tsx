@@ -73,7 +73,7 @@ export function IncidentDetail() {
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />
               {incident.service_name && (
-                <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[var(--surface-card)] border border-[var(--hairline)] text-[var(--body)]">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[var(--surface-card)] border border-[var(--hairline)] text-[var(--body)]">
                   svc: {incident.service_name}
                 </span>
               )}

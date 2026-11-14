@@ -84,13 +84,13 @@ export function AIInvestigation() {
           </p>
         </div>
 
-        {/* Model Status Pill */}
-        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border text-xs font-medium bg-[#5db872]/10 border-[#5db872]/30 text-[#2e7d32] dark:text-[#81c784]">
-          <span className="w-2 h-2 rounded-full bg-[#5db872] animate-pulse" />
+        {/* Model Status Badge */}
+        <div className="flex items-center gap-2 px-3 py-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-400 select-none">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
           <span>
             {aiStatus?.available
               ? `Ollama Online · ${aiStatus.configured_model || 'llama3.2'}`
-              : 'Autonomous SRE Diagnostic Engine · Active'}
+              : 'Autonomous SRE Diagnostics Ready'}
           </span>
         </div>
       </div>
@@ -262,21 +262,21 @@ export function AIInvestigation() {
 
                     <div className="flex items-center gap-2">
                       {investigation.status === 'RUNNING' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#cc785c]/20 text-[#cc785c] border border-[#cc785c]/40">
-                          <Loader size={12} className="animate-spin" />
-                          <span>REASONING</span>
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium tracking-tight bg-[#cc785c]/15 text-[#cc785c] border border-[#cc785c]/30 select-none">
+                          <Loader size={11} className="animate-spin" />
+                          <span>Reasoning</span>
                         </span>
                       )}
                       {investigation.status === 'COMPLETED' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#5db872]/20 text-[#81c784] border border-[#5db872]/40">
-                          <CheckCircle size={12} />
-                          <span>SYNTHESIS COMPLETE</span>
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium tracking-tight bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 select-none">
+                          <CheckCircle size={11} />
+                          <span>Synthesis Complete</span>
                         </span>
                       )}
                       {investigation.status === 'FAILED' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#c64545]/20 text-[#ef5350] border border-[#c64545]/40">
-                          <XCircle size={12} />
-                          <span>INFERENCE FAILED</span>
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium tracking-tight bg-rose-500/10 text-rose-400 border border-rose-500/20 select-none">
+                          <XCircle size={11} />
+                          <span>Inference Failed</span>
                         </span>
                       )}
                     </div>

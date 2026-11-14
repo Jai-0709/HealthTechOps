@@ -95,7 +95,6 @@ export function BrandLogo({
             >
               HealthTechOps
             </span>
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#5db872] animate-pulse" />
           </div>
           <span className="text-[10px] tracking-wider uppercase text-[var(--muted)] font-medium mt-1">
             {subtitle}

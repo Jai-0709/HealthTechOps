@@ -8,7 +8,7 @@ import { Button } from '../components/ui/Button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { MetricCard } from '../components/ui/MetricCard'
 import { EmptyState } from '../components/ui/EmptyState'
-import { FlaskConical, Play, CheckCircle, BarChart2, ShieldCheck, Cpu } from 'lucide-react'
+import { FlaskConical, Play, CheckCircle, BarChart2, ShieldCheck, Cpu, Loader } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface TestCase {
@@ -122,8 +122,8 @@ export function AIEvaluation() {
       </div>
 
       {runningId && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-800 dark:text-amber-300">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping flex-shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300">
+          <Loader size={14} className="animate-spin text-amber-600 dark:text-amber-400 flex-shrink-0" />
           <span>
             <strong>Benchmark in progress:</strong> Executing local Ollama inference against {testCases.length} synthetic scenarios...
           </span>

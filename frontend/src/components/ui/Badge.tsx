@@ -1,39 +1,51 @@
 import { cn } from '../../lib/utils'
+import { Check, ShieldCheck, AlertCircle } from 'lucide-react'
 
 export type BadgeVariant = 'success' | 'danger' | 'warning' | 'info' | 'neutral' | 'coral'
 
 const variantClass: Record<BadgeVariant, string> = {
   success:
-    'bg-[#5db872]/15 text-[#2e7d32] border-[#5db872]/30 dark:bg-[#5db872]/20 dark:text-[#81c784] dark:border-[#5db872]/40',
+    'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
   danger:
-    'bg-[#c64545]/15 text-[#c64545] border-[#c64545]/30 dark:bg-[#c64545]/20 dark:text-[#ef5350] dark:border-[#c64545]/40',
+    'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20',
   warning:
-    'bg-[#e8a55a]/20 text-[#b25e00] border-[#e8a55a]/40 dark:bg-[#e8a55a]/20 dark:text-[#ffb74d] dark:border-[#e8a55a]/40',
+    'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20',
   info:
-    'bg-[#5db8a6]/15 text-[#00695c] border-[#5db8a6]/30 dark:bg-[#5db8a6]/20 dark:text-[#4db6ac] dark:border-[#5db8a6]/40',
+    'bg-sky-500/10 text-sky-700 dark:text-sky-400 border-sky-500/20',
   neutral:
-    'bg-[var(--surface-card)] text-[var(--muted)] border-[var(--hairline)] dark:bg-[var(--surface-dark-elevated)] dark:text-[var(--on-dark-soft)]',
+    'bg-[var(--surface-card)] text-[var(--muted)] border-[var(--hairline)]',
   coral:
-    'bg-[var(--primary)] text-white border-transparent shadow-xs',
+    'bg-[#cc785c]/10 text-[#cc785c] border-[#cc785c]/25',
+}
+
+function formatLabel(str: string): string {
+  if (!str) return ''
+  return str
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ')
 }
 
 export function Badge({
   children,
   className,
   variant = 'neutral',
+  dot = false,
 }: {
   children: React.ReactNode
   className?: string
   variant?: BadgeVariant
+  dot?: boolean
 }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border transition-colors',
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium border tracking-tight transition-colors select-none',
         variantClass[variant],
         className
       )}
     >
+      {dot && <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 flex-shrink-0" />}
       {children}
     </span>
   )
@@ -45,14 +57,35 @@ export function SeverityBadge({ severity }: { severity: string }) {
     sev === 'CRITICAL'
       ? 'danger'
       : sev === 'HIGH'
-      ? 'warning'
+      ? 'coral'
       : sev === 'MEDIUM'
       ? 'warning'
       : sev === 'LOW'
       ? 'info'
       : 'neutral'
 
-  return <Badge variant={variant}>{sev}</Badge>
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium border tracking-tight transition-colors select-none',
+        variantClass[variant]
+      )}
+    >
+      <span
+        className={cn(
+          'w-1.5 h-1.5 rounded-full flex-shrink-0',
+          sev === 'CRITICAL'
+            ? 'bg-rose-500'
+            : sev === 'HIGH'
+            ? 'bg-[#cc785c]'
+            : sev === 'MEDIUM'
+            ? 'bg-amber-500'
+            : 'bg-sky-500'
+        )}
+      />
+      <span>{formatLabel(sev)}</span>
+    </span>
+  )
 }
 
 export function StatusBadge({ status }: { status: string }) {
@@ -68,10 +101,62 @@ export function StatusBadge({ status }: { status: string }) {
       ? 'info'
       : 'neutral'
 
+  const dotColor =
+    variant === 'success'
+      ? 'bg-emerald-500'
+      : variant === 'warning'
+      ? 'bg-amber-500'
+      : variant === 'danger'
+      ? 'bg-rose-500'
+      : 'bg-sky-500'
+
   return (
-    <Badge variant={variant}>
-      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75 inline-block" />
-      {st.replace(/_/g, ' ')}
-    </Badge>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium border tracking-tight transition-colors select-none',
+        variantClass[variant]
+      )}
+    >
+      <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', dotColor)} />
+      <span>{formatLabel(st)}</span>
+    </span>
+  )
+}
+
+export function PolicyBadge({ isAllowlisted }: { isAllowlisted: boolean }) {
+  if (isAllowlisted) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md select-none">
+        <Check size={11} className="stroke-[2.5]" />
+        <span>Allowlisted</span>
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--muted)] bg-[var(--surface-card)] border border-[var(--hairline)] px-2 py-0.5 rounded-md select-none">
+      <AlertCircle size={11} />
+      <span>Approval Required</span>
+    </span>
+  )
+}
+
+export function RiskBadge({ level }: { level: string }) {
+  const lvl = (level || '').toUpperCase()
+  const variant: BadgeVariant =
+    lvl === 'HIGH' || lvl === 'CRITICAL'
+      ? 'danger'
+      : lvl === 'MEDIUM'
+      ? 'warning'
+      : 'neutral'
+
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium border tracking-tight select-none',
+        variantClass[variant]
+      )}
+    >
+      {formatLabel(lvl)}
+    </span>
   )
 }

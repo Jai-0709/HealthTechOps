@@ -64,3 +64,4 @@ export function BottomNav({ onOpenMore }: BottomNavProps) {
     </nav>
   )
 }
+

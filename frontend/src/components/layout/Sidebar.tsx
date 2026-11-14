@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Radio,
 } from 'lucide-react'
 
 const NAV = [
@@ -74,16 +73,7 @@ export function Sidebar({
           </button>
         </div>
 
-        {/* Live Operational Status Indicator */}
-        <div className="mx-4 my-3 p-3 bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Radio size={14} className="text-[#5db872] animate-pulse" />
-            <span className="text-xs font-medium text-[var(--ink)]">AIOps Telemetry Stream</span>
-          </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#5db872]/15 text-[#2e7d32] dark:text-[#81c784] font-semibold">
-            ONLINE
-          </span>
-        </div>
+
 
         {/* Mobile Navigation List with large touch targets */}
         <nav className="flex-1 py-2 px-3 overflow-y-auto space-y-1">
@@ -136,18 +126,7 @@ export function Sidebar({
           <BrandLogo size="md" showText={!collapsed} />
         </div>
 
-        {/* Desktop Status Pill */}
-        {!collapsed && (
-          <div className="mx-3 my-2.5 px-3 py-1 bg-[var(--surface-card)] border border-[var(--hairline)] rounded-lg flex items-center justify-between text-[11px]">
-            <span className="flex items-center gap-1.5 text-[var(--muted)] font-mono text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5db872] animate-pulse" />
-              SRE ENGINE
-            </span>
-            <span className="font-mono text-[10px] text-[#2e7d32] dark:text-[#81c784] font-semibold">
-              ACTIVE
-            </span>
-          </div>
-        )}
+
 
         {/* Desktop Navigation List */}
         <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-1">

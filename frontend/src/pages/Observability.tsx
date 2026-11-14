@@ -322,13 +322,13 @@ export function Observability() {
                         {t.trace_id}
                       </span>
                       <span
-                        className={`text-[10px] uppercase font-mono px-2 py-0.5 rounded-full border ${
+                        className={`text-[11px] font-medium px-2 py-0.5 rounded-md border tracking-tight ${
                           t.status === 'ok'
-                            ? 'bg-[#5db872]/15 text-[#2e7d32] border-[#5db872]/30 dark:text-[#81c784]'
-                            : 'bg-[#e8a55a]/15 text-[#b25e00] border-[#e8a55a]/30 dark:text-[#ffb74d]'
+                            ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
+                            : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'
                         }`}
                       >
-                        {t.status}
+                        {t.status === 'ok' ? 'Success' : 'Error'}
                       </span>
                     </div>
 
