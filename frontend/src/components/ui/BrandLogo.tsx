@@ -4,6 +4,7 @@ interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   showText?: boolean
+  showSubtitle?: boolean
   subtitle?: string
 }
 
@@ -11,8 +12,10 @@ export function BrandLogo({
   size = 'md',
   className,
   showText = false,
+  showSubtitle,
   subtitle = 'Cloud Reliability Platform',
 }: BrandLogoProps) {
+  const hasSubtitle = showSubtitle ?? (size !== 'sm')
   const dims =
     size === 'sm'
       ? 'w-7 h-7'
@@ -84,21 +87,21 @@ export function BrandLogo({
       </div>
 
       {showText && (
-        <div className="flex flex-col text-left">
-          <div className="flex items-center gap-1.5">
-            <span
-              className={cn(
-                'font-normal tracking-tight text-[var(--ink)] leading-none',
-                size === 'lg' || size === 'xl' ? 'text-2xl' : 'text-lg'
-              )}
-              style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
-            >
-              HealthTechOps
-            </span>
-          </div>
-          <span className="text-[10px] tracking-wider uppercase text-[var(--muted)] font-medium mt-1">
-            {subtitle}
+        <div className="flex flex-col text-left justify-center min-w-0">
+          <span
+            className={cn(
+              'font-normal tracking-tight text-[var(--ink)] leading-tight whitespace-nowrap',
+              size === 'lg' || size === 'xl' ? 'text-2xl' : size === 'sm' ? 'text-base' : 'text-lg'
+            )}
+            style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
+          >
+            HealthTechOps
           </span>
+          {hasSubtitle && (
+            <span className="text-[10px] tracking-wider uppercase text-[var(--muted)] font-medium mt-0.5 whitespace-nowrap">
+              {subtitle}
+            </span>
+          )}
         </div>
       )}
     </div>

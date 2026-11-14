@@ -37,8 +37,8 @@ export function Infrastructure() {
         </div>
       </div>
 
-      {/* Primary Infrastructure Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Primary Infrastructure Metric Cards (2x2 on mobile) */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <MetricCard
           loading={isLoading}
           title="CPU Utilization"

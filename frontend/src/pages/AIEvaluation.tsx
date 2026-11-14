@@ -130,8 +130,8 @@ export function AIEvaluation() {
         </div>
       )}
 
-      {/* KPI Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI Summary Cards (2x2 on mobile) */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <MetricCard
           title="Benchmark Scenarios"
           value={casesLoading ? '—' : String(testCases.length)}

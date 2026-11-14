@@ -33,7 +33,7 @@ export function Overview() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--hairline)] pb-6">
         <div>
           <div className="text-[11px] font-mono tracking-widest uppercase text-[var(--primary)] mb-1">
-            IEDP Portfolio · Autonomous Operations
+            Healthcare Cloud SRE · Autonomous Operations
           </div>
           <h1
             className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
@@ -57,8 +57,8 @@ export function Overview() {
         </div>
       </div>
 
-      {/* Primary KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Primary KPI Grid (2x2 on mobile, 4-col on desktop) */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <MetricCard
           loading={isLoading}
           title="Total Services"

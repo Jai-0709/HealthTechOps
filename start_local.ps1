@@ -1,4 +1,4 @@
-﻿# HealthTechOps — Local Development Startup Script
+# HealthTechOps — Local Development Startup Script
 # Autonomous Cloud Reliability & AI Operations Platform
 # 
 # Usage: .\start_local.ps1

@@ -53,22 +53,33 @@ export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
 
   return (
     <>
-      <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-[var(--canvas)] border-b border-[var(--hairline)] flex-shrink-0 z-10">
-        {/* Left section: Mobile Hamburger + Mobile Brand */}
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-30 h-14 sm:h-16 flex items-center justify-between px-3 sm:px-6 bg-[var(--canvas)]/95 backdrop-blur-md border-b border-[var(--hairline)] flex-shrink-0">
+        {/* Left Segment: Mobile Brand & Desktop Search */}
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          {/* Mobile Hamburger Drawer Trigger */}
           <button
             onClick={onOpenMobile}
-            className="md:hidden p-2 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95"
+            className="md:hidden p-2 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95 flex-shrink-0"
             aria-label="Open mobile navigation menu"
           >
             <Menu size={18} />
           </button>
 
-          <div className="md:hidden flex items-center gap-2">
-            <BrandLogo size="sm" showText={true} />
+          {/* Mobile Brand Emblem & Typography (Single line, strictly non-wrapping) */}
+          <div
+            className="md:hidden flex items-center gap-2 min-w-0 cursor-pointer"
+            onClick={() => navigate('/')}
+          >
+            <BrandLogo size="sm" showText={false} />
+            <span
+              className="text-lg font-normal tracking-tight text-[var(--ink)] truncate leading-none"
+              style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
+            >
+              HealthTechOps
+            </span>
           </div>
 
-          {/* High-Power OmniSearch Trigger (Desktop) */}
+          {/* Desktop OmniSearch Trigger Bar */}
           <button
             onClick={() => setPaletteOpen(true)}
             className="relative w-72 lg:w-96 hidden md:flex items-center justify-between pl-3 pr-2.5 py-1.5 text-xs bg-[var(--surface-soft)] text-[var(--muted)] border border-[var(--hairline)] rounded-lg hover:border-[var(--primary)] hover:bg-[var(--surface-card)] transition-all cursor-pointer group text-left shadow-2xs"
@@ -87,19 +98,19 @@ export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
           </button>
         </div>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-          {/* Mobile Search Button */}
+        {/* Right Segment: Clean, Uncluttered Touch Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 ml-auto flex-shrink-0">
+          {/* OmniSearch Trigger Button (Mobile & Tablet) */}
           <button
             onClick={() => setPaletteOpen(true)}
-            className="md:hidden p-2 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95"
+            className="p-2 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors active:scale-95"
             aria-label="Open OmniSearch"
             title="Search (Ctrl+K)"
           >
-            <Search size={17} />
+            <Search size={16} />
           </button>
 
-          {/* Calm Enterprise Operational Indicator (No pulsing slop) */}
+          {/* Calm Enterprise Operational Indicator (Desktop only) */}
           <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-md border border-[var(--hairline)] bg-[var(--surface-card)] text-xs text-[var(--body)] select-none">
             <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', dotColor)} />
             <span className="font-medium tracking-tight">
@@ -111,21 +122,21 @@ export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
             </span>
           </div>
 
-          {/* Theme Toggle */}
+          {/* Theme Toggle (Desktop & Tablet only; on mobile it lives in the slide drawer) */}
           <button
             onClick={toggle}
-            className="w-9 h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors"
+            className="hidden sm:flex w-9 h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
             {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
 
-          {/* GitHub Repository Link */}
+          {/* GitHub Repository Link (Desktop & Tablet only) */}
           <a
             href="https://github.com/Jai-0709/HealthTechOps"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-9 h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors"
+            className="hidden sm:flex w-9 h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors"
             title="GitHub Repository (Jai-0709/HealthTechOps)"
             aria-label="GitHub Repository"
           >
@@ -141,20 +152,24 @@ export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
           {/* Incident Notification Bell */}
           <button
             onClick={() => navigate('/incidents?severity=CRITICAL')}
-            className="relative w-9 h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
+            className="relative p-2 sm:w-9 sm:h-9 rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--surface-card)] transition-colors cursor-pointer"
             title="Active critical incidents"
           >
-            <Bell size={15} />
+            <Bell size={16} />
             {(overview?.incidents?.critical ?? 0) > 0 && (
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-[var(--canvas)]" />
             )}
           </button>
 
           {/* User Identity Pill */}
-          <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-[var(--hairline)]">
-            <div className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-medium text-xs flex-shrink-0 shadow-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 pl-1.5 sm:pl-3 border-l border-[var(--hairline)]">
+            <button
+              onClick={() => navigate('/settings')}
+              className="w-8 h-8 rounded-full bg-[var(--primary)] text-white flex items-center justify-center font-medium text-xs flex-shrink-0 shadow-xs cursor-pointer hover:opacity-90 active:scale-95 transition-opacity"
+              title={user?.full_name || 'User Profile'}
+            >
               {user?.full_name ? user.full_name.charAt(0).toUpperCase() : <User size={14} />}
-            </div>
+            </button>
             {user && (
               <div className="hidden lg:block text-left">
                 <div className="text-xs font-medium text-[var(--ink)] leading-snug">
@@ -167,7 +182,7 @@ export function Header({ onOpenMobile }: { onOpenMobile?(): void }) {
             )}
             <button
               onClick={logout}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+              className="hidden sm:flex w-8 h-8 rounded-lg items-center justify-center text-[var(--muted)] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
               title="Sign out"
             >
               <LogOut size={14} />

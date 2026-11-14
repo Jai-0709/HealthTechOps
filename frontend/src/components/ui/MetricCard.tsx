@@ -35,7 +35,7 @@ export function MetricCard({
 }: Props) {
   if (loading) {
     return (
-      <div className="bg-[var(--surface-elevated)] dark:bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-5 animate-pulse shadow-xs">
+      <div className="bg-[var(--surface-elevated)] dark:bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-3.5 sm:p-5 animate-pulse shadow-xs">
         <div className="h-3 bg-[var(--surface-soft)] rounded w-20 mb-3" />
         <div className="h-8 bg-[var(--surface-soft)] rounded w-24 mb-2" />
         <div className="h-3 bg-[var(--surface-soft)] rounded w-16" />
@@ -43,45 +43,55 @@ export function MetricCard({
     )
   }
 
+  const isWord = typeof value === 'string' && isNaN(Number(value)) && value.length > 2
+  const formattedValue = isWord
+    ? String(value).charAt(0).toUpperCase() + String(value).slice(1).toLowerCase()
+    : value
+
   return (
     <div
       className={cn(
-        'bg-[var(--surface-elevated)] dark:bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-5 transition-all shadow-xs hover:border-[var(--muted-soft)]',
+        'bg-[var(--surface-elevated)] dark:bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-3.5 sm:p-5 transition-all shadow-xs hover:border-[var(--muted-soft)]',
         className
       )}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-1.5 sm:gap-2">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 mb-1.5">
+          <div className="flex items-center gap-1.5 mb-1 sm:mb-1.5">
             <span
               className={cn(
                 'w-1.5 h-1.5 rounded-full shrink-0',
                 statusIndicator[status].dot
               )}
             />
-            <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)] truncate">
+            <p className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[var(--muted)] truncate">
               {title}
             </p>
           </div>
 
-          <div className="flex items-baseline gap-1">
+          <div className="flex items-baseline gap-1 flex-wrap">
             <span
-              className="text-3xl font-normal text-[var(--ink)] tracking-tight font-serif tabular-nums"
+              className={cn(
+                'tracking-tight tabular-nums',
+                isWord
+                  ? 'text-lg sm:text-2xl font-medium text-[var(--ink)]'
+                  : 'text-2xl sm:text-3xl font-normal font-serif text-[var(--ink)]'
+              )}
             >
-              {value}
+              {formattedValue}
             </span>
             {unit && (
-              <span className="text-xs font-medium text-[var(--muted)]">
+              <span className="text-[10px] sm:text-xs font-medium text-[var(--muted)]">
                 {unit}
               </span>
             )}
           </div>
 
-          {trend && trendValue && (
-            <div className="mt-2 flex items-center gap-1 text-xs">
+          {trendValue && (
+            <div className="mt-1 sm:mt-2 flex items-center gap-1 text-[11px] sm:text-xs">
               <span
                 className={cn(
-                  'flex items-center gap-0.5 font-medium',
+                  'flex items-center gap-0.5 font-medium truncate',
                   trend === 'up'
                     ? 'text-[var(--success)]'
                     : trend === 'down'
@@ -90,20 +100,18 @@ export function MetricCard({
                 )}
               >
                 {trend === 'up' ? (
-                  <TrendingUp size={12} strokeWidth={2.5} />
+                  <TrendingUp size={11} strokeWidth={2.5} className="shrink-0" />
                 ) : trend === 'down' ? (
-                  <TrendingDown size={12} strokeWidth={2.5} />
-                ) : (
-                  <Minus size={12} strokeWidth={2.5} />
-                )}
-                {trendValue}
+                  <TrendingDown size={11} strokeWidth={2.5} className="shrink-0" />
+                ) : null}
+                <span className="truncate">{trendValue}</span>
               </span>
             </div>
           )}
         </div>
 
         {icon && (
-          <div className="w-8 h-8 rounded-lg bg-[var(--surface-soft)] border border-[var(--hairline-soft)] flex items-center justify-center text-[var(--primary)] shrink-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--surface-soft)] border border-[var(--hairline-soft)] flex items-center justify-center text-[var(--primary)] shrink-0">
             {icon}
           </div>
         )}
