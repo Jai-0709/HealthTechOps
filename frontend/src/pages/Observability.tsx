@@ -66,7 +66,7 @@ export function Observability() {
             Telemetry Pipeline · 6 Microservices
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Observability &amp; Telemetry
@@ -261,18 +261,20 @@ export function Observability() {
               {logsData.logs.map((l: any, i: number) => (
                 <div
                   key={i}
-                  className="flex items-start gap-3 py-1.5 px-2 hover:bg-[#252320] rounded transition-colors text-[11px] leading-relaxed"
+                  className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 py-1.5 px-2 hover:bg-[#252320] rounded transition-colors text-[11px] leading-relaxed"
                 >
-                  <span className="text-[#a09d96] flex-shrink-0 w-20">
-                    {new Date(l.timestamp).toLocaleTimeString()}
-                  </span>
-                  <span className={`flex-shrink-0 w-12 ${levelColor(l.level)}`}>
-                    [{l.level}]
-                  </span>
-                  <span className="text-[#cc785c] flex-shrink-0 w-32 truncate">
-                    {l.service}
-                  </span>
-                  <span className="text-[#faf9f5] break-all">{l.message}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0 text-[10px] sm:text-[11px]">
+                    <span className="text-[#a09d96]">
+                      {new Date(l.timestamp).toLocaleTimeString()}
+                    </span>
+                    <span className={levelColor(l.level)}>
+                      [{l.level}]
+                    </span>
+                    <span className="text-[#cc785c] font-medium truncate max-w-[120px] sm:max-w-[140px]">
+                      {l.service}
+                    </span>
+                  </div>
+                  <span className="text-[#faf9f5] break-words flex-1 pl-0 sm:pl-1">{l.message}</span>
                 </div>
               ))}
             </div>

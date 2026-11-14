@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { useAuthStore } from '../stores/authStore'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
-import { Badge } from '../components/ui/Badge'
+import { Badge, SeverityBadge, StatusBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { MetricCard } from '../components/ui/MetricCard'
@@ -95,7 +95,7 @@ export function AIEvaluation() {
             Responsible AI · Diagnostic Accuracy Benchmark
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             AI Model Evaluation
@@ -229,13 +229,7 @@ export function AIEvaluation() {
                       </div>
                     </Td>
                     <Td>
-                      <Badge
-                        variant={
-                          sev === 'CRITICAL' ? 'danger' : sev === 'HIGH' ? 'warning' : 'info'
-                        }
-                      >
-                        {sev}
-                      </Badge>
+                      <SeverityBadge severity={sev} />
                     </Td>
                   </Tr>
                 )
@@ -289,9 +283,7 @@ export function AIEvaluation() {
                     </code>
                   </Td>
                   <Td>
-                    <Badge variant={run.status === 'completed' ? 'success' : 'warning'}>
-                      {run.status.toUpperCase()}
-                    </Badge>
+                    <StatusBadge status={run.status} />
                   </Td>
                   <Td className="font-mono text-xs">{run.total_cases}</Td>
                   <Td className="font-mono text-xs font-semibold">

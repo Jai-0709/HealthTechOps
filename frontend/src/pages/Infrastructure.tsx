@@ -21,7 +21,7 @@ export function Infrastructure() {
             Host Telemetry · Compute &amp; Capacity
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Infrastructure Health
@@ -119,10 +119,10 @@ export function Infrastructure() {
               },
             ].map((m) => (
               <div key={m.label} className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
                   <span className="font-medium text-[var(--ink)]">{m.label}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-[var(--muted)]">{m.detail}</span>
+                  <div className="flex items-center justify-between sm:justify-end gap-3">
+                    <span className="font-mono text-[var(--muted)] text-[11px] sm:text-xs">{m.detail}</span>
                     <span className={`font-mono font-bold ${m.text}`}>{m.value.toFixed(1)}%</span>
                   </div>
                 </div>

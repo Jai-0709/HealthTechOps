@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
-import { Badge } from '../components/ui/Badge'
 import { MetricCard } from '../components/ui/MetricCard'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
-import { ShieldCheck, Clock, AlertTriangle, TrendingUp, Target, BarChart2 } from 'lucide-react'
+import { ShieldCheck, Clock, AlertTriangle, TrendingUp } from 'lucide-react'
+import { cn } from '../lib/utils'
 
 interface SLOStatus {
   service_name: string
@@ -30,13 +30,13 @@ interface MTTxMetrics {
 function ErrorBudgetBar({ pct }: { pct: number }) {
   const color =
     pct >= 50
-      ? 'bg-[#5db872]'
+      ? 'bg-emerald-500'
       : pct >= 20
-      ? 'bg-[#e8a55a]'
-      : 'bg-[#c64545]'
+      ? 'bg-amber-500'
+      : 'bg-rose-500'
 
   return (
-    <div className="flex items-center gap-2.5 min-w-[150px]">
+    <div className="flex items-center gap-2.5 min-w-[120px]">
       <div className="flex-1 h-2 rounded-full bg-[var(--canvas)] border border-[var(--hairline)] overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${color}`}
@@ -47,6 +47,27 @@ function ErrorBudgetBar({ pct }: { pct: number }) {
         {pct.toFixed(1)}%
       </span>
     </div>
+  )
+}
+
+function ComplianceBadge({ isMeeting }: { isMeeting: boolean }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium border select-none',
+        isMeeting
+          ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20'
+          : 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20'
+      )}
+    >
+      <span
+        className={cn(
+          'w-1.5 h-1.5 rounded-full flex-shrink-0',
+          isMeeting ? 'bg-emerald-500' : 'bg-rose-500'
+        )}
+      />
+      <span>{isMeeting ? 'Compliant' : 'Breaching'}</span>
+    </span>
   )
 }
 
@@ -75,7 +96,7 @@ export function Reliability() {
             Service Level Objectives · 30-Day Rolling Window
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Reliability &amp; SLO Management
@@ -126,7 +147,7 @@ export function Reliability() {
         />
       </div>
 
-      {/* SLO Targets & Error Budgets Table */}
+      {/* SLO Targets & Error Budgets */}
       <Card>
         <CardHeader>
           <div>
@@ -143,53 +164,97 @@ export function Reliability() {
         {sloLoading ? (
           <div className="py-12 text-center text-sm text-[var(--muted)]">Loading SLO telemetry...</div>
         ) : (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Service</Th>
-                <Th>Availability Target</Th>
-                <Th>Actual Availability</Th>
-                <Th>Latency P95 Target</Th>
-                <Th>Actual P95</Th>
-                <Th>Error Budget Remaining</Th>
-                <Th>Compliance</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <>
+            {/* Mobile SLO Cards */}
+            <div className="md:hidden space-y-3 pt-2">
               {sloList.map((slo) => (
-                <Tr key={slo.slug}>
-                  <Td>
-                    <div className="font-medium text-[var(--ink)] leading-snug">
-                      {slo.service_name}
+                <div key={slo.slug} className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-medium text-sm text-[var(--ink)] leading-snug">
+                        {slo.service_name}
+                      </div>
+                      <div className="text-[10px] font-mono text-[var(--muted)] mt-0.5">
+                        {slo.slug}
+                      </div>
                     </div>
-                    <div className="text-[11px] font-mono text-[var(--muted)] mt-0.5">
-                      {slo.slug}
+                    <ComplianceBadge isMeeting={slo.is_meeting_slo} />
+                  </div>
+
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-[var(--muted)]">Error Budget Remaining:</span>
                     </div>
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--body)]">
-                    {slo.availability_target.toFixed(2)}%
-                  </Td>
-                  <Td className="font-mono text-xs font-semibold text-[var(--ink)]">
-                    {slo.availability_actual.toFixed(2)}%
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--muted)]">
-                    &lt;{slo.latency_target_ms}ms
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--ink)]">
-                    {slo.latency_actual_ms.toFixed(0)}ms
-                  </Td>
-                  <Td>
                     <ErrorBudgetBar pct={slo.error_budget_pct_remaining} />
-                  </Td>
-                  <Td>
-                    <Badge variant={slo.is_meeting_slo ? 'success' : 'danger'}>
-                      {slo.is_meeting_slo ? '✓ COMPLIANT' : '⚠ BREACHING'}
-                    </Badge>
-                  </Td>
-                </Tr>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--hairline)] text-xs">
+                    <div>
+                      <div className="text-[10px] font-mono uppercase text-[var(--muted)]">Uptime</div>
+                      <div className="font-mono font-medium text-[var(--ink)] mt-0.5">
+                        {slo.availability_actual.toFixed(2)}% <span className="text-[10px] text-[var(--muted)] font-normal">/ {slo.availability_target.toFixed(2)}%</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-mono uppercase text-[var(--muted)]">Latency P95</div>
+                      <div className="font-mono font-medium text-[var(--ink)] mt-0.5">
+                        {slo.latency_actual_ms.toFixed(0)}ms <span className="text-[10px] text-[var(--muted)] font-normal">/ &lt;{slo.latency_target_ms}ms</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </Tbody>
-          </Table>
+            </div>
+
+            {/* Desktop SLO Table */}
+            <div className="hidden md:block">
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>Service</Th>
+                    <Th>Availability Target</Th>
+                    <Th>Actual Availability</Th>
+                    <Th>Latency P95 Target</Th>
+                    <Th>Actual P95</Th>
+                    <Th>Error Budget Remaining</Th>
+                    <Th>Compliance</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {sloList.map((slo) => (
+                    <Tr key={slo.slug}>
+                      <Td>
+                        <div className="font-medium text-[var(--ink)] leading-snug">
+                          {slo.service_name}
+                        </div>
+                        <div className="text-[11px] font-mono text-[var(--muted)] mt-0.5">
+                          {slo.slug}
+                        </div>
+                      </Td>
+                      <Td className="font-mono text-xs text-[var(--body)]">
+                        {slo.availability_target.toFixed(2)}%
+                      </Td>
+                      <Td className="font-mono text-xs font-semibold text-[var(--ink)]">
+                        {slo.availability_actual.toFixed(2)}%
+                      </Td>
+                      <Td className="font-mono text-xs text-[var(--muted)]">
+                        &lt;{slo.latency_target_ms}ms
+                      </Td>
+                      <Td className="font-mono text-xs text-[var(--ink)]">
+                        {slo.latency_actual_ms.toFixed(0)}ms
+                      </Td>
+                      <Td>
+                        <ErrorBudgetBar pct={slo.error_budget_pct_remaining} />
+                      </Td>
+                      <Td>
+                        <ComplianceBadge isMeeting={slo.is_meeting_slo} />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </div>
+          </>
         )}
       </Card>
     </div>

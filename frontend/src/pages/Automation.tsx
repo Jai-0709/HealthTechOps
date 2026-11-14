@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
-import { StatusBadge, Badge, RiskBadge, PolicyBadge } from '../components/ui/Badge'
+import { StatusBadge, RiskBadge, PolicyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -14,7 +14,83 @@ import { useAuthStore } from '../stores/authStore'
 const TABS = ['Runbooks', 'Pending Approvals', 'Execution History'] as const
 type Tab = typeof TABS[number]
 
-function RunbookRow({ rb, onExecute, isExecuting }: { rb: any; onExecute(id: string): void; isExecuting: boolean }) {
+function RunbookCard({
+  rb,
+  onExecute,
+  isExecuting,
+}: {
+  rb: any
+  onExecute(id: string): void
+  isExecuting: boolean
+}) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-3">
+      <div
+        className="flex items-start justify-between gap-2 cursor-pointer"
+        onClick={() => setExpanded((e) => !e)}
+      >
+        <div className="min-w-0 flex-1">
+          <div className="font-medium text-sm text-[var(--ink)] leading-snug">{rb.name}</div>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <RiskBadge level={rb.risk_level} />
+            <PolicyBadge isAllowlisted={rb.is_allowlisted} />
+            {rb.service_type && (
+              <span className="text-[10px] font-mono text-[var(--muted)] bg-[var(--surface-card)] px-1.5 py-0.5 rounded border border-[var(--hairline)]">
+                {rb.service_type}
+              </span>
+            )}
+          </div>
+        </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            setExpanded((x) => !x)
+          }}
+          className="p-1.5 text-[var(--muted)] hover:text-[var(--ink)] rounded-lg"
+          aria-label="Toggle details"
+        >
+          {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        </button>
+      </div>
+
+      {expanded && (
+        <div className="pt-2 space-y-2 border-t border-[var(--hairline)]">
+          <p className="text-xs text-[var(--muted)] leading-relaxed">{rb.description}</p>
+          <div className="font-mono text-[10px] text-[var(--muted)] uppercase tracking-wider">
+            Execution Steps:
+          </div>
+          <ol className="list-decimal list-inside space-y-1 font-mono text-xs text-[var(--body)] bg-[var(--canvas)] p-2.5 rounded-lg border border-[var(--hairline)]">
+            {rb.steps?.map((s: string, i: number) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <Button
+        size="sm"
+        variant="outline"
+        className="w-full justify-center min-h-[40px]"
+        loading={isExecuting}
+        onClick={() => onExecute(rb.id)}
+      >
+        <PlayCircle size={14} className="text-[var(--primary)]" />
+        <span>Trigger Runbook</span>
+      </Button>
+    </div>
+  )
+}
+
+function RunbookRow({
+  rb,
+  onExecute,
+  isExecuting,
+}: {
+  rb: any
+  onExecute(id: string): void
+  isExecuting: boolean
+}) {
   const [expanded, setExpanded] = useState(false)
   return (
     <>
@@ -134,7 +210,7 @@ export function Automation() {
             Human-in-the-Loop Remediation · Guardrailed Runbooks
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Automation &amp; Runbooks
@@ -197,27 +273,43 @@ export function Automation() {
               {runbooks?.length ?? 0} available
             </span>
           </CardHeader>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Runbook Name</Th>
-                <Th>Risk Level</Th>
-                <Th>Safety Policy</Th>
-                <Th>Service Target</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {runbooks?.map((rb) => (
-                <RunbookRow
-                  key={rb.id}
-                  rb={rb}
-                  onExecute={(id) => executeRunbook.mutate(id)}
-                  isExecuting={executeRunbook.isPending}
-                />
-              ))}
-            </Tbody>
-          </Table>
+
+          {/* Mobile Runbooks Cards */}
+          <div className="md:hidden space-y-3 pt-2">
+            {runbooks?.map((rb) => (
+              <RunbookCard
+                key={rb.id}
+                rb={rb}
+                onExecute={(id) => executeRunbook.mutate(id)}
+                isExecuting={executeRunbook.isPending}
+              />
+            ))}
+          </div>
+
+          {/* Desktop Runbooks Table */}
+          <div className="hidden md:block">
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>Runbook Name</Th>
+                  <Th>Risk Level</Th>
+                  <Th>Safety Policy</Th>
+                  <Th>Service Target</Th>
+                  <Th>Action</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {runbooks?.map((rb) => (
+                  <RunbookRow
+                    key={rb.id}
+                    rb={rb}
+                    onExecute={(id) => executeRunbook.mutate(id)}
+                    isExecuting={executeRunbook.isPending}
+                  />
+                ))}
+              </Tbody>
+            </Table>
+          </div>
         </Card>
       )}
 
@@ -246,58 +338,102 @@ export function Automation() {
               Your account has <strong>VIEWER</strong> permissions. SRE_ENGINEER or ADMIN role is required to authorize remediations.
             </div>
           ) : (
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Remediation Action</Th>
-                  <Th>Risk Level</Th>
-                  <Th>Linked Incident</Th>
-                  <Th>Requested At</Th>
-                  <Th>Decision</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+            <>
+              {/* Mobile Pending Cards */}
+              <div className="md:hidden space-y-3 pt-2">
                 {pending.map((r: any) => (
-                  <Tr key={r.id}>
-                    <Td>
-                      <div className="font-mono text-xs font-medium text-[var(--ink)]">
+                  <div key={r.id} className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="font-mono text-xs font-semibold text-[var(--ink)]">
                         {r.action_name}
                       </div>
-                    </Td>
-                    <Td>
-                      <Badge variant="danger">{r.risk_level}</Badge>
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)]">
-                      {r.incident_id ? `INC-${r.incident_id.slice(0, 8)}` : '—'}
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)]">
-                      {formatDate(r.requested_at)}
-                    </Td>
-                    <Td>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          loading={approve.isPending}
-                          onClick={() => approve.mutate(r.id)}
-                        >
-                          <CheckCircle size={13} />
-                          <span>Approve</span>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          loading={reject.isPending}
-                          onClick={() => reject.mutate(r.id)}
-                        >
-                          <XCircle size={13} />
-                          <span>Reject</span>
-                        </Button>
-                      </div>
-                    </Td>
-                  </Tr>
+                      <RiskBadge level={r.risk_level} />
+                    </div>
+                    <div className="text-xs font-mono text-[var(--muted)] flex items-center justify-between">
+                      <span>{r.incident_id ? `INC-${r.incident_id.slice(0, 8)}` : 'System'}</span>
+                      <span>{formatDate(r.requested_at)}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--hairline)]">
+                      <Button
+                        size="sm"
+                        className="w-full justify-center min-h-[40px]"
+                        loading={approve.isPending}
+                        onClick={() => approve.mutate(r.id)}
+                      >
+                        <CheckCircle size={14} />
+                        <span>Approve</span>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="w-full justify-center min-h-[40px]"
+                        loading={reject.isPending}
+                        onClick={() => reject.mutate(r.id)}
+                      >
+                        <XCircle size={14} />
+                        <span>Reject</span>
+                      </Button>
+                    </div>
+                  </div>
                 ))}
-              </Tbody>
-            </Table>
+              </div>
+
+              {/* Desktop Pending Table */}
+              <div className="hidden md:block">
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>Remediation Action</Th>
+                      <Th>Risk Level</Th>
+                      <Th>Linked Incident</Th>
+                      <Th>Requested At</Th>
+                      <Th>Decision</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {pending.map((r: any) => (
+                      <Tr key={r.id}>
+                        <Td>
+                          <div className="font-mono text-xs font-medium text-[var(--ink)]">
+                            {r.action_name}
+                          </div>
+                        </Td>
+                        <Td>
+                          <RiskBadge level={r.risk_level} />
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)]">
+                          {r.incident_id ? `INC-${r.incident_id.slice(0, 8)}` : '—'}
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)]">
+                          {formatDate(r.requested_at)}
+                        </Td>
+                        <Td>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              loading={approve.isPending}
+                              onClick={() => approve.mutate(r.id)}
+                            >
+                              <CheckCircle size={13} />
+                              <span>Approve</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              loading={reject.isPending}
+                              onClick={() => reject.mutate(r.id)}
+                            >
+                              <XCircle size={13} />
+                              <span>Reject</span>
+                            </Button>
+                          </div>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </div>
+            </>
           )}
         </Card>
       )}
@@ -324,54 +460,76 @@ export function Automation() {
               />
             </div>
           ) : (
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>Action</Th>
-                  <Th>Risk</Th>
-                  <Th>Status</Th>
-                  <Th>Requested At</Th>
-                  <Th>Executed At</Th>
-                  <Th>Result Output</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+            <>
+              {/* Mobile History Cards */}
+              <div className="md:hidden space-y-3 pt-2">
                 {history.map((r: any) => (
-                  <Tr key={r.id}>
-                    <Td>
-                      <span className="font-mono text-xs font-medium text-[var(--ink)]">
+                  <div key={r.id} className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-mono text-xs font-semibold text-[var(--ink)]">
                         {r.action_name}
                       </span>
-                    </Td>
-                    <Td>
-                      <Badge
-                        variant={
-                          r.risk_level === 'HIGH'
-                            ? 'danger'
-                            : r.risk_level === 'MEDIUM'
-                            ? 'warning'
-                            : 'success'
-                        }
-                      >
-                        {r.risk_level}
-                      </Badge>
-                    </Td>
-                    <Td>
                       <StatusBadge status={r.status} />
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)]">
-                      {formatDate(r.requested_at)}
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)]">
-                      {formatDate(r.reviewed_at)}
-                    </Td>
-                    <Td className="text-xs font-mono text-[var(--muted)] max-w-xs truncate">
-                      {r.execution_result?.result || '—'}
-                    </Td>
-                  </Tr>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <RiskBadge level={r.risk_level} />
+                      <span className="text-[10px] font-mono text-[var(--muted)]">
+                        Requested: {formatDate(r.requested_at)}
+                      </span>
+                    </div>
+                    {r.result && (
+                      <div className="pt-2 border-t border-[var(--hairline)]">
+                        <pre className="text-[10px] font-mono text-[var(--muted)] bg-[var(--canvas)] p-2 rounded border border-[var(--hairline)] overflow-x-auto">
+                          {typeof r.result === 'object' ? JSON.stringify(r.result, null, 2) : r.result}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </Tbody>
-            </Table>
+              </div>
+
+              {/* Desktop History Table */}
+              <div className="hidden md:block">
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>Action</Th>
+                      <Th>Risk</Th>
+                      <Th>Status</Th>
+                      <Th>Requested At</Th>
+                      <Th>Executed At</Th>
+                      <Th>Result Output</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {history.map((r: any) => (
+                      <Tr key={r.id}>
+                        <Td>
+                          <span className="font-mono text-xs font-medium text-[var(--ink)]">
+                            {r.action_name}
+                          </span>
+                        </Td>
+                        <Td>
+                          <RiskBadge level={r.risk_level} />
+                        </Td>
+                        <Td>
+                          <StatusBadge status={r.status} />
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)]">
+                          {formatDate(r.requested_at)}
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)]">
+                          {r.executed_at ? formatDate(r.executed_at) : '—'}
+                        </Td>
+                        <Td className="text-xs font-mono text-[var(--muted)] max-w-xs truncate">
+                          {r.result ? JSON.stringify(r.result) : '—'}
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </div>
+            </>
           )}
         </Card>
       )}

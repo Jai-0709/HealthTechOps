@@ -36,7 +36,7 @@ export function Overview() {
             IEDP Portfolio · Autonomous Operations
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Operations Overview

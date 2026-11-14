@@ -98,7 +98,12 @@ export function ServiceDetail() {
         </div>
 
         {user?.role !== 'VIEWER' && (
-          <Button variant="primary" size="md" onClick={() => setInjectOpen(true)}>
+          <Button
+            variant="primary"
+            size="md"
+            className="w-full sm:w-auto justify-center"
+            onClick={() => setInjectOpen(true)}
+          >
             <Zap size={15} />
             <span>Inject Chaos Anomaly</span>
           </Button>
@@ -254,7 +259,7 @@ export function ServiceDetail() {
             <select
               value={failType}
               onChange={(e) => setFailType(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm bg-[var(--canvas)] text-[var(--ink)] border border-[var(--hairline)] rounded-lg focus:outline-none focus:border-[var(--primary)]"
+              className="w-full px-3.5 py-2 text-base sm:text-sm bg-[var(--canvas)] text-[var(--ink)] border border-[var(--hairline)] rounded-lg focus:outline-none focus:border-[var(--primary)]"
             >
               {FAILURES.map((f) => (
                 <option key={f} value={f}>
@@ -274,7 +279,7 @@ export function ServiceDetail() {
               max={300}
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
-              className="w-full px-3.5 py-2 text-sm bg-[var(--canvas)] text-[var(--ink)] border border-[var(--hairline)] rounded-lg focus:outline-none focus:border-[var(--primary)]"
+              className="w-full px-3.5 py-2 text-base sm:text-sm bg-[var(--canvas)] text-[var(--ink)] border border-[var(--hairline)] rounded-lg focus:outline-none focus:border-[var(--primary)]"
             />
           </div>
 

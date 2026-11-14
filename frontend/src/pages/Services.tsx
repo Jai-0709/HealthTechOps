@@ -19,7 +19,7 @@ function ServiceCard({ s }: { s: Service }) {
   return (
     <div
       onClick={() => navigate(`/services/${s.slug}`)}
-      className="bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-6 cursor-pointer hover:border-[var(--primary)] transition-all duration-150 group flex flex-col justify-between"
+      className="bg-[var(--surface-card)] border border-[var(--hairline)] rounded-xl p-4 sm:p-6 cursor-pointer hover:border-[var(--primary)] transition-all duration-150 group flex flex-col justify-between"
     >
       <div>
         <div className="flex items-start justify-between gap-2 mb-3">
@@ -86,7 +86,7 @@ export function Services() {
             Microservice Topology · Ports 8010–8015
           </div>
           <h1
-            className="text-4xl font-normal text-[var(--ink)] tracking-tight"
+            className="text-2xl sm:text-4xl font-normal text-[var(--ink)] tracking-tight"
             style={{ fontFamily: 'Cormorant Garamond, Georgia, serif' }}
           >
             Services Catalog
@@ -97,7 +97,7 @@ export function Services() {
         </div>
 
         {counts && (
-          <div className="flex items-center gap-4 text-xs font-mono">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs font-mono flex-wrap">
             <span className="flex items-center gap-1.5 text-[#5db872]">
               <span className="w-2 h-2 rounded-full bg-[#5db872]" />
               {counts.healthy} healthy
