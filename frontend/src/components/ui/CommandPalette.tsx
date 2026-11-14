@@ -362,19 +362,7 @@ export function CommandPalette({
           onClose()
         },
       },
-      {
-        id: 'act-github',
-        title: 'Open GitHub Repository',
-        subtitle: 'https://github.com/Jai-0709/HealthTechOps',
-        category: 'Actions',
-        icon: Globe,
-        action: () => {
-          window.open('https://github.com/Jai-0709/HealthTechOps', '_blank')
-          onClose()
-        },
-        badge: 'GitHub',
-        badgeVariant: 'neutral',
-      },
+
       {
         id: 'act-live-website',
         title: 'Open Live Cloud Application',
@@ -417,17 +405,39 @@ export function CommandPalette({
     return items
   }, [navigate, onClose, theme, toggleTheme, incidents])
 
-  // Filter items by query
+  // Filter items by multi-token fuzzy matching and optional prefix commands
   const filtered = useMemo(() => {
     if (!query.trim()) return allItems
-    const q = query.toLowerCase().trim()
-    return allItems.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        (item.subtitle && item.subtitle.toLowerCase().includes(q)) ||
-        item.category.toLowerCase().includes(q) ||
-        (item.badge && item.badge.toLowerCase().includes(q))
-    )
+    const raw = query.trim()
+    const q = raw.toLowerCase()
+
+    // Prefix detection
+    let targetCategory: string | null = null
+    let searchTerm = q
+    if (q.startsWith('>') || q.startsWith('/')) {
+      targetCategory = 'Actions'
+      searchTerm = q.slice(1).trim()
+    } else if (q.startsWith('#') || q.startsWith('@')) {
+      targetCategory = 'Microservices'
+      searchTerm = q.slice(1).trim()
+    } else if (q.startsWith('!') || q.startsWith('?')) {
+      targetCategory = 'Incidents'
+      searchTerm = q.slice(1).trim()
+    } else if (q.startsWith('$')) {
+      targetCategory = 'Runbooks'
+      searchTerm = q.slice(1).trim()
+    }
+
+    const tokens = searchTerm.split(/\s+/).filter(Boolean)
+
+    return allItems.filter((item) => {
+      if (targetCategory && item.category !== targetCategory) {
+        return false
+      }
+      if (tokens.length === 0) return true
+      const fullCorpus = `${item.title} ${item.subtitle || ''} ${item.category} ${item.badge || ''} ${item.id}`.toLowerCase()
+      return tokens.every((token) => fullCorpus.includes(token))
+    })
   }, [allItems, query])
 
   // Reset selectedIndex when filtered results change
@@ -502,6 +512,42 @@ export function CommandPalette({
           >
             Cancel
           </button>
+        </div>
+
+        {/* Quick Category Quick-Filters (One-tap filtering for Mobile & Desktop) */}
+        <div className="flex items-center gap-1.5 px-4 py-2 border-b border-[var(--hairline)] bg-[var(--surface-soft)]/40 overflow-x-auto text-[11px]">
+          <span className="text-[var(--muted)] font-mono text-[10px] uppercase tracking-wider mr-1 select-none">
+            Filter:
+          </span>
+          {[
+            { label: 'All', prefix: '' },
+            { label: 'Services (#)', prefix: '#' },
+            { label: 'Incidents (!)', prefix: '!' },
+            { label: 'Runbooks ($)', prefix: '$' },
+            { label: 'Actions (>)', prefix: '>' },
+          ].map((f) => {
+            const isActive = f.prefix
+              ? query.startsWith(f.prefix)
+              : !['#', '!', '$', '>'].some((p) => query.startsWith(p))
+            return (
+              <button
+                key={f.label}
+                type="button"
+                onClick={() => {
+                  setQuery(f.prefix)
+                  inputRef.current?.focus()
+                }}
+                className={cn(
+                  'px-2 py-0.5 rounded-md font-medium transition-colors select-none cursor-pointer text-[11px]',
+                  isActive
+                    ? 'bg-[var(--primary)] text-white shadow-xs'
+                    : 'bg-[var(--surface-card)] text-[var(--muted)] border border-[var(--hairline)] hover:text-[var(--ink)]'
+                )}
+              >
+                {f.label}
+              </button>
+            )
+          })}
         </div>
 
         {/* Results List */}

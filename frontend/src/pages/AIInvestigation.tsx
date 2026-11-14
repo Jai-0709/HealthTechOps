@@ -108,44 +108,8 @@ export function AIInvestigation() {
             </span>
           </div>
 
-          {/* Mobile Horizontal Carousel (lg:hidden) */}
-          <div className="lg:hidden flex gap-2.5 overflow-x-auto pb-2 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 touch-pan-x">
-            {incidents?.map((i) => {
-              const isCurrent = selectedId === i.id
-              return (
-                <button
-                  key={i.id}
-                  onClick={() => {
-                    setSelectedId(i.id)
-                    setInvId('')
-                  }}
-                  className={`w-64 flex-shrink-0 text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
-                    isCurrent
-                      ? 'border-[var(--primary)] bg-[var(--surface-card)] shadow-xs ring-2 ring-[var(--primary)]/20'
-                      : 'border-[var(--hairline)] bg-[var(--surface-soft)]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-1.5 mb-1">
-                    <SeverityBadge severity={i.severity} />
-                    <span className="text-[10px] font-mono text-[var(--muted)]">
-                      {formatDate(i.detected_at)}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-medium text-[var(--ink)] line-clamp-2 leading-snug">
-                    {i.title}
-                  </h4>
-                  {i.service_name && (
-                    <div className="text-[10px] font-mono text-[var(--muted)] mt-1.5">
-                      svc: <span className="text-[var(--body)] font-medium">{i.service_name}</span>
-                    </div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Desktop Vertical Scroll List (hidden lg:block) */}
-          <div className="hidden lg:block space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
+          {/* Unified Vertical Incident Queue (Zero horizontal scrolling or clipping) */}
+          <div className="space-y-2.5 max-h-[380px] lg:max-h-[640px] overflow-y-auto pr-1">
             {!incidents?.length ? (
               <div className="p-8 text-center text-sm text-[var(--muted)] border border-[var(--hairline)] rounded-xl bg-[var(--surface-soft)]">
                 Zero incidents in queue
@@ -160,13 +124,13 @@ export function AIInvestigation() {
                       setSelectedId(i.id)
                       setInvId('')
                     }}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-150 cursor-pointer ${
+                    className={`w-full text-left p-3.5 sm:p-4 rounded-xl border transition-all duration-150 cursor-pointer ${
                       isCurrent
                         ? 'border-[var(--primary)] bg-[var(--surface-card)] shadow-xs ring-1 ring-[var(--primary)]/20'
                         : 'border-[var(--hairline)] bg-[var(--surface-soft)] hover:border-[var(--muted-soft)] hover:bg-[var(--surface-card)]'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
                       <div className="flex items-center gap-1.5">
                         <SeverityBadge severity={i.severity} />
                         <StatusBadge status={i.status} />
@@ -176,7 +140,7 @@ export function AIInvestigation() {
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-medium text-[var(--ink)] leading-snug">
+                    <h3 className="text-xs sm:text-sm font-medium text-[var(--ink)] leading-snug">
                       {i.title}
                     </h3>
 

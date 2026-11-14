@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/C
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { SeverityBadge, StatusBadge } from '../components/ui/Badge'
 import { formatDate } from '../lib/utils'
-import { Server, AlertTriangle, Activity, CheckCircle, ArrowRight, ShieldCheck, Cpu } from 'lucide-react'
+import { Server, AlertTriangle, Activity, CheckCircle, ArrowRight, ShieldCheck, Cpu, Search } from 'lucide-react'
 
 export function Overview() {
   const navigate = useNavigate()
@@ -47,6 +47,14 @@ export function Overview() {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-omni-search'))}
+            className="px-3.5 py-2 text-xs font-medium rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] hover:bg-[var(--surface-card)] text-[var(--ink)] transition-colors inline-flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            title="Search (Ctrl+K)"
+          >
+            <Search size={14} className="text-[var(--primary)]" />
+            <span>Search</span>
+          </button>
           <button
             onClick={() => navigate('/ai-investigation')}
             className="px-3.5 py-2 text-xs font-medium rounded-lg bg-[var(--surface-dark)] text-[var(--on-dark)] hover:bg-[var(--surface-dark-elevated)] border border-[var(--hairline)] transition-colors inline-flex items-center gap-2"

@@ -76,21 +76,21 @@ export function Observability() {
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl w-full sm:w-auto overflow-x-auto touch-pan-x">
+        {/* Tab Switcher (Equal 3-column grid on mobile, zero horizontal scroll) */}
+        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl w-full sm:w-auto">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => handleTabChange(t)}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs rounded-lg transition-all font-medium whitespace-nowrap flex-shrink-0 cursor-pointer ${
+              className={`flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 text-xs rounded-lg transition-all font-medium text-center cursor-pointer active:scale-95 ${
                 tab === t
-                  ? 'bg-[var(--surface-card)] text-[var(--ink)] shadow-xs border border-[var(--hairline)]'
+                  ? 'bg-[var(--surface-card)] text-[var(--ink)] shadow-xs border border-[var(--hairline)] font-semibold'
                   : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
             >
-              {t === 'Metrics' && <Activity size={14} />}
-              {t === 'Logs' && <FileText size={14} />}
-              {t === 'Traces' && <GitBranch size={14} />}
+              {t === 'Metrics' && <Activity size={14} className="flex-shrink-0" />}
+              {t === 'Logs' && <FileText size={14} className="flex-shrink-0" />}
+              {t === 'Traces' && <GitBranch size={14} className="flex-shrink-0" />}
               <span>{t}</span>
             </button>
           ))}

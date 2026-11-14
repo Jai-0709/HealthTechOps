@@ -220,21 +220,29 @@ export function Automation() {
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl w-full sm:w-auto overflow-x-auto touch-pan-x">
+        {/* Tab Switcher (Zero horizontal scroll, 3-column mobile layout) */}
+        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-1.5 p-1 bg-[var(--surface-soft)] border border-[var(--hairline)] rounded-xl w-full sm:w-auto">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs rounded-lg transition-all font-medium whitespace-nowrap flex-shrink-0 cursor-pointer ${
+              className={`flex items-center justify-center gap-1 px-1.5 sm:px-4 py-2 text-xs rounded-lg transition-all font-medium text-center cursor-pointer active:scale-95 ${
                 tab === t
-                  ? 'bg-[var(--surface-card)] text-[var(--ink)] shadow-xs border border-[var(--hairline)]'
+                  ? 'bg-[var(--surface-card)] text-[var(--ink)] shadow-xs border border-[var(--hairline)] font-semibold'
                   : 'text-[var(--muted)] hover:text-[var(--ink)]'
               }`}
             >
-              <span>{t}</span>
+              <span className="truncate">
+                {t === 'Pending Approvals' ? (
+                  <>
+                    <span className="hidden sm:inline">Pending </span>Approvals
+                  </>
+                ) : (
+                  t
+                )}
+              </span>
               {t === 'Pending Approvals' && (pending?.length ?? 0) > 0 && (
-                <span className="w-5 h-5 bg-[#cc785c] text-white text-[11px] rounded-full flex items-center justify-center font-bold">
+                <span className="px-1.5 py-0.5 bg-[#cc785c] text-white text-[10px] rounded-full flex items-center justify-center font-bold flex-shrink-0">
                   {pending?.length}
                 </span>
               )}

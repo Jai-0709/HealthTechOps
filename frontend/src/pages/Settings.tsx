@@ -93,20 +93,20 @@ export function Settings() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-        {/* Sub-Nav Tabs (Horizontal on mobile, Vertical on desktop) */}
-        <div className="md:col-span-3 flex md:flex-col gap-1.5 overflow-x-auto pb-1 md:pb-0 touch-pan-x">
+        {/* Sub-Nav Tabs (2x2 grid on mobile, Vertical on desktop - Zero horizontal scroll) */}
+        <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-1 gap-1.5 w-full">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl md:rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0 md:w-full text-left cursor-pointer active:scale-95 ${
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-xl md:rounded-lg text-xs font-medium transition-all w-full text-left cursor-pointer active:scale-95 ${
                 activeTab === id
-                  ? 'bg-[var(--surface-card)] text-[var(--ink)] border-l-0 md:border-l-2 border-b-2 md:border-b-0 border-[var(--primary)] shadow-xs'
-                  : 'text-[var(--muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]'
+                  ? 'bg-[var(--surface-card)] text-[var(--ink)] border border-[var(--primary)]/30 md:border-l-2 md:border-t-0 md:border-r-0 md:border-b-0 border-[var(--primary)] shadow-xs font-semibold'
+                  : 'bg-[var(--surface-soft)] md:bg-transparent text-[var(--muted)] hover:bg-[var(--surface-card)] hover:text-[var(--ink)]'
               }`}
             >
-              <Icon size={15} className={activeTab === id ? 'text-[var(--primary)]' : 'text-[var(--muted)]'} />
-              <span>{label}</span>
+              <Icon size={15} className={`flex-shrink-0 ${activeTab === id ? 'text-[var(--primary)]' : 'text-[var(--muted)]'}`} />
+              <span className="truncate">{label}</span>
             </button>
           ))}
         </div>
@@ -251,20 +251,7 @@ export function Settings() {
                     </a>
                   }
                 />
-                <InfoRow
-                  label="GitHub Repository"
-                  value={
-                    <a
-                      href="https://github.com/Jai-0709/HealthTechOps"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[var(--primary)] hover:underline font-mono flex items-center gap-1 justify-end"
-                    >
-                      <span>Jai-0709/HealthTechOps</span>
-                      <span className="text-[10px]">↗</span>
-                    </a>
-                  }
-                />
+
                 <InfoRow label="Application Title" value="HealthTechOps (AIOps Platform)" />
                 <InfoRow label="Version" value="1.0.0-rc1" />
                 <InfoRow

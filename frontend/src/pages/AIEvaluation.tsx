@@ -185,57 +185,103 @@ export function AIEvaluation() {
             description="Database contains no evaluation scenarios."
           />
         ) : (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Scenario Name &amp; Description</Th>
-                <Th>Ground Truth Root Cause</Th>
-                <Th>Allowlisted Expected Action</Th>
-                <Th>Incident Severity</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <>
+            {/* Mobile Cards (Zero horizontal scroll) */}
+            <div className="md:hidden space-y-3 pt-2">
               {testCases.map((tc) => {
                 const sev = tc.synthetic_incident?.severity || 'MEDIUM'
                 return (
-                  <Tr key={tc.id}>
-                    <Td>
-                      <div className="font-medium text-[var(--ink)] leading-snug">{tc.name}</div>
-                      {tc.description && (
-                        <div className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">
-                          {tc.description}
-                        </div>
-                      )}
-                    </Td>
-                    <Td>
-                      <div className="text-xs text-[var(--body)] font-sans max-w-sm">
+                  <div
+                    key={tc.id}
+                    className="p-3.5 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="font-medium text-xs text-[var(--ink)] leading-snug">{tc.name}</div>
+                      <SeverityBadge severity={sev} />
+                    </div>
+                    {tc.description && (
+                      <p className="text-[11px] text-[var(--muted)] leading-relaxed">
+                        {tc.description}
+                      </p>
+                    )}
+                    <div className="pt-2 border-t border-[var(--hairline)] space-y-1 text-xs">
+                      <div className="text-[11px] text-[var(--body)]">
+                        <strong className="text-[var(--ink)]">Expected Cause: </strong>
                         {tc.expected_root_cause}
                       </div>
-                    </Td>
-                    <Td>
-                      <div className="flex flex-wrap gap-1">
-                        {tc.expected_actions && tc.expected_actions.length > 0 ? (
-                          tc.expected_actions.map((act) => (
+                      {tc.expected_actions && tc.expected_actions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {tc.expected_actions.map((act) => (
                             <code
                               key={act}
-                              className="text-[11px] font-mono bg-[var(--surface-soft)] text-[var(--primary)] px-2 py-0.5 rounded border border-[var(--hairline)]"
+                              className="text-[10px] font-mono bg-[var(--surface-card)] text-[var(--primary)] px-1.5 py-0.5 rounded border border-[var(--hairline)]"
                             >
                               {act}
                             </code>
-                          ))
-                        ) : (
-                          <span className="text-xs text-[var(--muted)]">—</span>
-                        )}
-                      </div>
-                    </Td>
-                    <Td>
-                      <SeverityBadge severity={sev} />
-                    </Td>
-                  </Tr>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )
               })}
-            </Tbody>
-          </Table>
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>Scenario Name &amp; Description</Th>
+                    <Th>Ground Truth Root Cause</Th>
+                    <Th>Allowlisted Expected Action</Th>
+                    <Th>Incident Severity</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {testCases.map((tc) => {
+                    const sev = tc.synthetic_incident?.severity || 'MEDIUM'
+                    return (
+                      <Tr key={tc.id}>
+                        <Td>
+                          <div className="font-medium text-[var(--ink)] leading-snug">{tc.name}</div>
+                          {tc.description && (
+                            <div className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">
+                              {tc.description}
+                            </div>
+                          )}
+                        </Td>
+                        <Td>
+                          <div className="text-xs text-[var(--body)] font-sans max-w-sm">
+                            {tc.expected_root_cause}
+                          </div>
+                        </Td>
+                        <Td>
+                          <div className="flex flex-wrap gap-1">
+                            {tc.expected_actions && tc.expected_actions.length > 0 ? (
+                              tc.expected_actions.map((act) => (
+                                <code
+                                  key={act}
+                                  className="text-[11px] font-mono bg-[var(--surface-soft)] text-[var(--primary)] px-2 py-0.5 rounded border border-[var(--hairline)]"
+                                >
+                                  {act}
+                                </code>
+                              ))
+                            ) : (
+                              <span className="text-xs text-[var(--muted)]">—</span>
+                            )}
+                          </div>
+                        </Td>
+                        <Td>
+                          <SeverityBadge severity={sev} />
+                        </Td>
+                      </Tr>
+                    )
+                  })}
+                </Tbody>
+              </Table>
+            </div>
+          </>
         )}
       </Card>
 
@@ -262,56 +308,94 @@ export function AIEvaluation() {
             />
           </div>
         ) : (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Target Model</Th>
-                <Th>Status</Th>
-                <Th>Test Cases</Th>
-                <Th>Correct Causes</Th>
-                <Th>Accuracy Rate</Th>
-                <Th>Evidence Score</Th>
-                <Th>Timestamp</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
+          <>
+            {/* Mobile Run Cards */}
+            <div className="md:hidden space-y-3 pt-2">
               {runs.map((run) => (
-                <Tr key={run.id}>
-                  <Td>
-                    <code className="text-xs font-mono bg-[var(--surface-soft)] px-2 py-0.5 rounded text-[var(--ink)]">
+                <div
+                  key={run.id}
+                  className="p-3.5 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <code className="text-xs font-mono bg-[var(--surface-card)] px-2 py-0.5 rounded text-[var(--ink)]">
                       {run.model_name}
                     </code>
-                  </Td>
-                  <Td>
                     <StatusBadge status={run.status} />
-                  </Td>
-                  <Td className="font-mono text-xs">{run.total_cases}</Td>
-                  <Td className="font-mono text-xs font-semibold">
-                    {run.status === 'completed' ? run.correct_root_causes : '—'}
-                  </Td>
-                  <Td>
-                    {run.status === 'completed' ? (
-                      <span
-                        className={`font-mono text-xs font-semibold ${
-                          run.accuracyPct >= 70 ? 'text-[#5db872]' : 'text-[#c64545]'
-                        }`}
-                      >
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-[var(--hairline)]">
+                    <div>
+                      <span className="text-[var(--muted)]">Accuracy: </span>
+                      <strong className={`font-mono ${run.accuracyPct >= 70 ? 'text-[#5db872]' : 'text-[#c64545]'}`}>
                         {run.accuracyPct.toFixed(1)}%
-                      </span>
-                    ) : (
-                      <span className="text-xs text-[var(--muted)]">—</span>
-                    )}
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--muted)]">
-                    {run.status === 'completed' ? run.avg_evidence_score?.toFixed(2) : '—'}
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--muted)]">
-                    {new Date(run.started_at).toLocaleString()}
-                  </Td>
-                </Tr>
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">Cases: </span>
+                      <strong className="font-mono text-[var(--ink)]">{run.total_cases}</strong>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[var(--muted)] pt-1">
+                    <span>Evidence: {run.avg_evidence_score?.toFixed(2) ?? '—'}</span>
+                    <span>{new Date(run.started_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
               ))}
-            </Tbody>
-          </Table>
+            </div>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th>Target Model</Th>
+                    <Th>Status</Th>
+                    <Th>Test Cases</Th>
+                    <Th>Correct Causes</Th>
+                    <Th>Accuracy Rate</Th>
+                    <Th>Evidence Score</Th>
+                    <Th>Timestamp</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {runs.map((run) => (
+                    <Tr key={run.id}>
+                      <Td>
+                        <code className="text-xs font-mono bg-[var(--surface-soft)] px-2 py-0.5 rounded text-[var(--ink)]">
+                          {run.model_name}
+                        </code>
+                      </Td>
+                      <Td>
+                        <StatusBadge status={run.status} />
+                      </Td>
+                      <Td className="font-mono text-xs">{run.total_cases}</Td>
+                      <Td className="font-mono text-xs font-semibold">
+                        {run.status === 'completed' ? run.correct_root_causes : '—'}
+                      </Td>
+                      <Td>
+                        {run.status === 'completed' ? (
+                          <span
+                            className={`font-mono text-xs font-semibold ${
+                              run.accuracyPct >= 70 ? 'text-[#5db872]' : 'text-[#c64545]'
+                            }`}
+                          >
+                            {run.accuracyPct.toFixed(1)}%
+                          </span>
+                        ) : (
+                          <span className="text-xs text-[var(--muted)]">—</span>
+                        )}
+                      </Td>
+                      <Td className="font-mono text-xs text-[var(--muted)]">
+                        {run.status === 'completed' ? run.avg_evidence_score?.toFixed(2) : '—'}
+                      </Td>
+                      <Td className="font-mono text-xs text-[var(--muted)]">
+                        {new Date(run.started_at).toLocaleString()}
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </div>
+          </>
         )}
       </Card>
     </div>

@@ -180,40 +180,67 @@ export function Infrastructure() {
             </span>
           </CardHeader>
 
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>PID</Th>
-                <Th>Process Image</Th>
-                <Th>CPU Load</Th>
-                <Th>Memory Resident</Th>
-                <Th>Status</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.processes.map((p: any) => (
-                <Tr key={p.pid}>
-                  <Td className="font-mono text-xs text-[var(--muted)]">{p.pid}</Td>
-                  <Td>
-                    <span className="font-mono text-xs font-medium text-[var(--ink)]">
-                      {p.name}
-                    </span>
-                  </Td>
-                  <Td className="font-mono text-xs font-semibold text-[var(--ink)]">
-                    {p.cpu_percent.toFixed(1)}%
-                  </Td>
-                  <Td className="font-mono text-xs text-[var(--muted)]">
-                    {p.memory_percent.toFixed(1)}%
-                  </Td>
-                  <Td>
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--surface-soft)] text-[var(--body)] border border-[var(--hairline)]">
-                      {p.status}
-                    </span>
-                  </Td>
+          {/* Mobile Process Cards (Zero horizontal scroll on mobile) */}
+          <div className="md:hidden space-y-2.5 pt-2 px-1">
+            {data.processes.map((p: any) => (
+              <div
+                key={p.pid}
+                className="p-3 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2"
+              >
+                <div className="flex items-center justify-between gap-2 min-w-0">
+                  <span className="font-mono text-xs font-semibold text-[var(--ink)] truncate">
+                    {p.name}
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--surface-card)] text-[var(--body)] border border-[var(--hairline)] flex-shrink-0">
+                    {p.status}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs font-mono text-[var(--muted)] pt-1 border-t border-[var(--hairline)]">
+                  <span>PID: <strong className="text-[var(--body)]">{p.pid}</strong></span>
+                  <span>CPU: <strong className="text-[var(--ink)]">{p.cpu_percent.toFixed(1)}%</strong></span>
+                  <span>RAM: <strong className="text-[var(--ink)]">{p.memory_percent.toFixed(1)}%</strong></span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>PID</Th>
+                  <Th>Process Image</Th>
+                  <Th>CPU Load</Th>
+                  <Th>Memory Resident</Th>
+                  <Th>Status</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
+              </Thead>
+              <Tbody>
+                {data.processes.map((p: any) => (
+                  <Tr key={p.pid}>
+                    <Td className="font-mono text-xs text-[var(--muted)]">{p.pid}</Td>
+                    <Td>
+                      <span className="font-mono text-xs font-medium text-[var(--ink)]">
+                        {p.name}
+                      </span>
+                    </Td>
+                    <Td className="font-mono text-xs font-semibold text-[var(--ink)]">
+                      {p.cpu_percent.toFixed(1)}%
+                    </Td>
+                    <Td className="font-mono text-xs text-[var(--muted)]">
+                      {p.memory_percent.toFixed(1)}%
+                    </Td>
+                    <Td>
+                      <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--surface-soft)] text-[var(--body)] border border-[var(--hairline)]">
+                        {p.status}
+                      </span>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </div>
         </Card>
       )}
     </div>

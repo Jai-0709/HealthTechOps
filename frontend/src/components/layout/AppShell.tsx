@@ -39,8 +39,8 @@ export function AppShell() {
 
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <Header onOpenMobile={() => setMobileOpen(true)} />
-        {/* Main Content Area with generous bottom padding on mobile for BottomNav */}
-        <main className="flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-8 pb-24 md:pb-8">
+        {/* Main Content Area with zero horizontal overflow & generous bottom padding for BottomNav */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden w-full min-w-0 px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-8 pb-24 md:pb-8">
           <Outlet />
         </main>
       </div>
