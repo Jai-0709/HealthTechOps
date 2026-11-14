@@ -1,5 +1,16 @@
 # HealthTechOps — AI-Powered Cloud Reliability & Incident Operations Platform
 
+<div align="center">
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-health--tech--ops.vercel.app-10b981?style=for-the-badge&logo=vercel&logoColor=white)](https://health-tech-ops.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Jai--0709%2FHealthTechOps-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Jai-0709/HealthTechOps)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+**🌐 Live Web Application:** [https://health-tech-ops.vercel.app](https://health-tech-ops.vercel.app)  
+**📂 GitHub Source Code:** [https://github.com/Jai-0709/HealthTechOps](https://github.com/Jai-0709/HealthTechOps)
+
+</div>
+
 > **Autonomous Cloud Reliability & AI Operations Platform** — Real-time infrastructure observability, synthetic healthcare microservice topology, and local LLM root-cause analysis with guardrailed human-in-the-loop remediation.
 
 ---
@@ -171,7 +182,9 @@ python agent.py
 
 | Service | URL |
 |---------|-----|
-| **Frontend** | http://localhost:5173 |
+| **Live Cloud Deployment (Vercel)** | [https://health-tech-ops.vercel.app](https://health-tech-ops.vercel.app) |
+| **GitHub Repository** | [https://github.com/Jai-0709/HealthTechOps](https://github.com/Jai-0709/HealthTechOps) |
+| **Local Frontend** | http://localhost:5173 |
 | **Backend API** | http://localhost:8000 |
 | **API Docs** | http://localhost:8000/docs |
 | **Metrics** | http://localhost:9100/metrics |

@@ -237,14 +237,42 @@ export function Settings() {
               </CardHeader>
 
               <div className="divide-y divide-[var(--hairline)] pt-2">
+                <InfoRow
+                  label="Live Cloud Deployment"
+                  value={
+                    <a
+                      href="https://health-tech-ops.vercel.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--primary)] hover:underline font-mono flex items-center gap-1 justify-end"
+                    >
+                      <span>health-tech-ops.vercel.app</span>
+                      <span className="text-[10px]">↗</span>
+                    </a>
+                  }
+                />
+                <InfoRow
+                  label="GitHub Repository"
+                  value={
+                    <a
+                      href="https://github.com/Jai-0709/HealthTechOps"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--primary)] hover:underline font-mono flex items-center gap-1 justify-end"
+                    >
+                      <span>Jai-0709/HealthTechOps</span>
+                      <span className="text-[10px]">↗</span>
+                    </a>
+                  }
+                />
                 <InfoRow label="Application Title" value="HealthTechOps (AIOps Platform)" />
                 <InfoRow label="Version" value="1.0.0-rc1" />
                 <InfoRow
-                  label="Synthetic Environment Flag"
-                  value={<Badge variant="warning">SYNTHETIC SIMULATION</Badge>}
+                  label="Environment Mode"
+                  value={<Badge variant="info">Synthetic Simulation</Badge>}
                 />
                 <InfoRow label="Backend API" value="FastAPI + SQLAlchemy + SQLite" />
-                <InfoRow label="Frontend Engine" value="React 18 + Vite + Tailwind CSS + TanStack Query" />
+                <InfoRow label="Frontend Engine" value="React 19 + Vite + Tailwind CSS + TanStack Query" />
                 <InfoRow label="Design Authority" value="DESIGN.md (Warm Cream Editorial System)" />
               </div>
             </Card>

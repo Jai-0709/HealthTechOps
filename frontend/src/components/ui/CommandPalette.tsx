@@ -362,6 +362,32 @@ export function CommandPalette({
           onClose()
         },
       },
+      {
+        id: 'act-github',
+        title: 'Open GitHub Repository',
+        subtitle: 'https://github.com/Jai-0709/HealthTechOps',
+        category: 'Actions',
+        icon: Globe,
+        action: () => {
+          window.open('https://github.com/Jai-0709/HealthTechOps', '_blank')
+          onClose()
+        },
+        badge: 'GitHub',
+        badgeVariant: 'neutral',
+      },
+      {
+        id: 'act-live-website',
+        title: 'Open Live Cloud Application',
+        subtitle: 'https://health-tech-ops.vercel.app',
+        category: 'Actions',
+        icon: Globe,
+        action: () => {
+          window.open('https://health-tech-ops.vercel.app', '_blank')
+          onClose()
+        },
+        badge: 'Production',
+        badgeVariant: 'success',
+      },
     ]
 
     // Append active incidents dynamically
