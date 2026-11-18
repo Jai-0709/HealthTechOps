@@ -10,7 +10,6 @@ import {
   AlertTriangle,
   Bot,
   Wrench,
-  Target,
   FlaskConical,
   ScrollText,
   Settings,
@@ -150,17 +149,6 @@ export function CommandPalette({
         icon: Wrench,
         action: () => {
           navigate('/automation')
-          onClose()
-        },
-      },
-      {
-        id: 'page-reliability',
-        title: 'Reliability & SLO Tracking',
-        subtitle: 'Error budgets, burn rates & 99.9% uptime compliance',
-        category: 'Pages',
-        icon: Target,
-        action: () => {
-          navigate('/reliability')
           onClose()
         },
       },

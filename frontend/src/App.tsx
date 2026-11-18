@@ -11,7 +11,6 @@ import { Incidents } from './pages/Incidents'
 import { IncidentDetail } from './pages/IncidentDetail'
 import { AIInvestigation } from './pages/AIInvestigation'
 import { Automation } from './pages/Automation'
-import { Reliability } from './pages/Reliability'
 import { AIEvaluation } from './pages/AIEvaluation'
 import { AuditLogs } from './pages/AuditLogs'
 import { Settings } from './pages/Settings'
@@ -59,7 +58,6 @@ export default function App() {
         <Route path="/incidents/:id" element={<IncidentDetail />} />
         <Route path="/ai-investigation" element={<AIInvestigation />} />
         <Route path="/automation" element={<Automation />} />
-        <Route path="/reliability" element={<Reliability />} />
         <Route path="/ai-evaluation" element={<AIEvaluation />} />
         <Route path="/audit-logs" element={<AuditLogs />} />
         <Route path="/settings" element={<Settings />} />
