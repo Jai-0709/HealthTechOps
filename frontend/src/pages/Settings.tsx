@@ -58,7 +58,7 @@ export function Settings() {
 
   const { data: health, isLoading: healthLoading } = useQuery<HealthResponse>({
     queryKey: ['health'],
-    queryFn: () => fetch('/health').then((r) => r.json()),
+    queryFn: () => api.get<HealthResponse>('/health'),
     enabled: activeTab === 'system',
     refetchOnWindowFocus: false,
   })

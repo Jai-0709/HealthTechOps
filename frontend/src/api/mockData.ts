@@ -1,5 +1,5 @@
 // Synthetic Demo / Offline Fallback Data for HealthTechOps Portfolio Presentation
-// Ensures zero downtime and zero 405/404 errors when hosted standalone on Vercel
+// Ensures zero downtime, zero blank dashes, and zero 404/405 errors when hosted standalone on Vercel
 
 export const DEMO_USERS: Record<string, any> = {
   'admin@healthtechops.local': {
@@ -29,12 +29,96 @@ export const DEMO_USERS: Record<string, any> = {
 }
 
 export const MOCK_SERVICES = [
-  { id: '1', name: 'Claims API', slug: 'claims-api', description: 'Real-time insurance claims processing and adjudication pipeline', status: 'HEALTHY', cpu_percent: 28.4, memory_percent: 42.1, request_count: 14200, error_count: 12, avg_latency_ms: 45.2, uptime_percent: 99.98, last_checked: new Date().toISOString(), port: 8010 },
-  { id: '2', name: 'Provider Portal', slug: 'provider-portal', description: 'Healthcare provider identity, clinic scheduling, and directory', status: 'HEALTHY', cpu_percent: 34.1, memory_percent: 51.0, request_count: 9800, error_count: 8, avg_latency_ms: 62.8, uptime_percent: 99.95, last_checked: new Date().toISOString(), port: 8011 },
-  { id: '3', name: 'Pharmacy Service', slug: 'pharmacy-service', description: 'Digital prescription routing and pharmacy formulary engine', status: 'DEGRADED', cpu_percent: 74.8, memory_percent: 68.2, request_count: 8100, error_count: 45, avg_latency_ms: 180.5, uptime_percent: 99.20, last_checked: new Date().toISOString(), port: 8012 },
-  { id: '4', name: 'Identity Service', slug: 'identity-service', description: 'HIPAA-compliant patient authentication and OAuth 2.0 PKCE', status: 'HEALTHY', cpu_percent: 19.5, memory_percent: 36.4, request_count: 22400, error_count: 3, avg_latency_ms: 22.1, uptime_percent: 99.99, last_checked: new Date().toISOString(), port: 8013 },
-  { id: '5', name: 'Notification Service', slug: 'notification-service', description: 'Encrypted patient notifications and SMS delivery gateway', status: 'HEALTHY', cpu_percent: 14.2, memory_percent: 29.8, request_count: 6500, error_count: 1, avg_latency_ms: 35.0, uptime_percent: 99.99, last_checked: new Date().toISOString(), port: 8014 },
-  { id: '6', name: 'Database Service', slug: 'database-service', description: 'Managed relational primary storage cluster with replication', status: 'HEALTHY', cpu_percent: 48.0, memory_percent: 62.5, request_count: 31000, error_count: 15, avg_latency_ms: 18.4, uptime_percent: 99.97, last_checked: new Date().toISOString(), port: 8015 },
+  {
+    id: '1',
+    name: 'Claims API',
+    slug: 'claims-api',
+    description: 'Real-time insurance claims processing and adjudication pipeline',
+    status: 'HEALTHY',
+    cpu_percent: 28.4,
+    memory_percent: 42.1,
+    request_count: 14200,
+    error_count: 12,
+    avg_latency_ms: 45.2,
+    uptime_percent: 99.98,
+    last_checked: new Date().toISOString(),
+    port: 8010,
+  },
+  {
+    id: '2',
+    name: 'Provider Portal',
+    slug: 'provider-portal',
+    description: 'Healthcare provider identity, clinic scheduling, and directory',
+    status: 'HEALTHY',
+    cpu_percent: 34.1,
+    memory_percent: 51.0,
+    request_count: 9800,
+    error_count: 8,
+    avg_latency_ms: 62.8,
+    uptime_percent: 99.95,
+    last_checked: new Date().toISOString(),
+    port: 8011,
+  },
+  {
+    id: '3',
+    name: 'Pharmacy Service',
+    slug: 'pharmacy-service',
+    description: 'Digital prescription routing and pharmacy formulary engine',
+    status: 'DEGRADED',
+    cpu_percent: 74.8,
+    memory_percent: 68.2,
+    request_count: 8100,
+    error_count: 45,
+    avg_latency_ms: 180.5,
+    uptime_percent: 99.20,
+    last_checked: new Date().toISOString(),
+    port: 8012,
+  },
+  {
+    id: '4',
+    name: 'Identity Service',
+    slug: 'identity-service',
+    description: 'HIPAA-compliant patient authentication and OAuth 2.0 PKCE',
+    status: 'HEALTHY',
+    cpu_percent: 19.5,
+    memory_percent: 36.4,
+    request_count: 22400,
+    error_count: 3,
+    avg_latency_ms: 22.1,
+    uptime_percent: 99.99,
+    last_checked: new Date().toISOString(),
+    port: 8013,
+  },
+  {
+    id: '5',
+    name: 'Notification Service',
+    slug: 'notification-service',
+    description: 'Encrypted patient notifications and SMS delivery gateway',
+    status: 'HEALTHY',
+    cpu_percent: 14.2,
+    memory_percent: 29.8,
+    request_count: 6500,
+    error_count: 1,
+    avg_latency_ms: 35.0,
+    uptime_percent: 99.99,
+    last_checked: new Date().toISOString(),
+    port: 8014,
+  },
+  {
+    id: '6',
+    name: 'Database Service',
+    slug: 'database-service',
+    description: 'Managed relational primary storage cluster with replication',
+    status: 'HEALTHY',
+    cpu_percent: 48.0,
+    memory_percent: 62.5,
+    request_count: 31000,
+    error_count: 15,
+    avg_latency_ms: 18.4,
+    uptime_percent: 99.97,
+    last_checked: new Date().toISOString(),
+    port: 8015,
+  },
 ]
 
 export const MOCK_INCIDENTS = [
@@ -87,79 +171,355 @@ export const MOCK_INCIDENTS = [
 ]
 
 export const MOCK_RUNBOOKS = [
-  { id: 'rb-1', name: 'restart_service', slug: 'restart-service', description: 'Gracefully restart a degraded service to clear transient faults', risk_level: 'MEDIUM', is_allowlisted: true, service_type: 'all', steps: ['Verify service is in DEGRADED state', 'Send SIGTERM to process', 'Wait 30s for graceful shutdown', 'Start service with original parameters', 'Verify health endpoint returns 200'], created_at: '2026-11-01T00:00:00Z' },
-  { id: 'rb-2', name: 'clear_cache', slug: 'clear-cache', description: 'Flush in-memory caches to resolve stale data issues', risk_level: 'LOW', is_allowlisted: true, service_type: 'all', steps: ['Connect to cache service', 'Issue FLUSHDB command', 'Verify cache is empty', 'Monitor cache hit ratio for 5 minutes'], created_at: '2026-11-01T00:00:00Z' },
-  { id: 'rb-3', name: 'scale_up_replicas', slug: 'scale-up-replicas', description: 'Increase service replica count to handle elevated load', risk_level: 'LOW', is_allowlisted: true, service_type: 'all', steps: ['Check current replica count', 'Verify resource headroom', 'Set replicas to target count', 'Wait for all replicas to become ready'], created_at: '2026-11-01T00:00:00Z' },
-  { id: 'rb-4', name: 'rollback_deployment', slug: 'rollback-deployment', description: 'Revert a service to the previous stable deployment image', risk_level: 'HIGH', is_allowlisted: true, service_type: 'all', steps: ['Identify last stable deployment tag', 'Pause incoming traffic', 'Deploy previous image tag', 'Run smoke tests', 'Resume traffic'], created_at: '2026-11-01T00:00:00Z' },
-  { id: 'rb-5', name: 'flush_connection_pool', slug: 'flush-connection-pool', description: 'Reset database connection pool to clear leaked connections', risk_level: 'LOW', is_allowlisted: true, service_type: 'database-service', steps: ['List active connections', 'Drain connection pool gracefully', 'Reinitialise pool with fresh connections'], created_at: '2026-11-01T00:00:00Z' },
+  {
+    id: 'rb-1',
+    name: 'restart_service',
+    slug: 'restart-service',
+    description: 'Gracefully restart a degraded service to clear transient faults',
+    risk_level: 'MEDIUM',
+    is_allowlisted: true,
+    service_type: 'all',
+    steps: [
+      'Verify service is in DEGRADED state',
+      'Send SIGTERM to process',
+      'Wait 30s for graceful shutdown',
+      'Start service with original parameters',
+      'Verify health endpoint returns 200',
+    ],
+    created_at: '2026-11-01T00:00:00Z',
+  },
+  {
+    id: 'rb-2',
+    name: 'clear_cache',
+    slug: 'clear-cache',
+    description: 'Flush in-memory caches to resolve stale data issues',
+    risk_level: 'LOW',
+    is_allowlisted: true,
+    service_type: 'all',
+    steps: [
+      'Connect to cache service',
+      'Issue FLUSHDB command',
+      'Verify cache is empty',
+      'Monitor cache hit ratio for 5 minutes',
+    ],
+    created_at: '2026-11-01T00:00:00Z',
+  },
+  {
+    id: 'rb-3',
+    name: 'scale_up_replicas',
+    slug: 'scale-up-replicas',
+    description: 'Increase service replica count to handle elevated load',
+    risk_level: 'LOW',
+    is_allowlisted: true,
+    service_type: 'all',
+    steps: [
+      'Check current replica count',
+      'Verify resource headroom',
+      'Set replicas to target count',
+      'Wait for all replicas to become ready',
+    ],
+    created_at: '2026-11-01T00:00:00Z',
+  },
+  {
+    id: 'rb-4',
+    name: 'rollback_deployment',
+    slug: 'rollback-deployment',
+    description: 'Revert a service to the previous stable deployment image',
+    risk_level: 'HIGH',
+    is_allowlisted: true,
+    service_type: 'all',
+    steps: [
+      'Identify last stable deployment tag',
+      'Pause incoming traffic',
+      'Deploy previous image tag',
+      'Run smoke tests',
+      'Resume traffic',
+    ],
+    created_at: '2026-11-01T00:00:00Z',
+  },
+  {
+    id: 'rb-5',
+    name: 'flush_connection_pool',
+    slug: 'flush-connection-pool',
+    description: 'Reset database connection pool to clear leaked connections',
+    risk_level: 'LOW',
+    is_allowlisted: true,
+    service_type: 'database-service',
+    steps: [
+      'List active connections',
+      'Drain connection pool gracefully',
+      'Reinitialise pool with fresh connections',
+    ],
+    created_at: '2026-11-01T00:00:00Z',
+  },
 ]
 
 export const MOCK_REMEDIATION_PENDING = [
   {
     id: 'rem-001',
+    action_name: 'restart_service',
+    incident_id: 'inc-001',
+    risk_level: 'MEDIUM',
+    status: 'PENDING_APPROVAL',
+    requested_at: new Date(Date.now() - 5 * 60000).toISOString(),
+    requested_by: 'admin@healthtechops.local',
+  },
+  {
+    id: 'rem-002',
     action_name: 'flush_connection_pool',
+    incident_id: 'inc-001',
     risk_level: 'LOW',
     status: 'PENDING_APPROVAL',
-    incident_id: 'inc-001',
-    requested_at: new Date(Date.now() - 30 * 60000).toISOString(),
+    requested_at: new Date(Date.now() - 25 * 60000).toISOString(),
+    requested_by: 'sre@healthtechops.local',
   },
 ]
 
 export const MOCK_SLO_STATUS = [
-  { service_name: 'Claims API', slug: 'claims-api', availability_target: 99.9, availability_actual: 99.98, latency_target_ms: 100, latency_actual_ms: 45.2, error_budget_remaining: 80, error_budget_total: 100, error_budget_pct_remaining: 80.0, is_meeting_slo: true, window_days: 30 },
-  { service_name: 'Provider Portal', slug: 'provider-portal', availability_target: 99.9, availability_actual: 99.95, latency_target_ms: 120, latency_actual_ms: 62.8, error_budget_remaining: 70, error_budget_total: 100, error_budget_pct_remaining: 70.0, is_meeting_slo: true, window_days: 30 },
-  { service_name: 'Pharmacy Service', slug: 'pharmacy-service', availability_target: 99.5, availability_actual: 99.20, latency_target_ms: 100, latency_actual_ms: 180.5, error_budget_remaining: 18, error_budget_total: 100, error_budget_pct_remaining: 18.0, is_meeting_slo: false, window_days: 30 },
-  { service_name: 'Identity Service', slug: 'identity-service', availability_target: 99.99, availability_actual: 99.99, latency_target_ms: 50, latency_actual_ms: 22.1, error_budget_remaining: 95, error_budget_total: 100, error_budget_pct_remaining: 95.0, is_meeting_slo: true, window_days: 30 },
-  { service_name: 'Notification Service', slug: 'notification-service', availability_target: 99.5, availability_actual: 99.99, latency_target_ms: 80, latency_actual_ms: 35.0, error_budget_remaining: 92, error_budget_total: 100, error_budget_pct_remaining: 92.0, is_meeting_slo: true, window_days: 30 },
-  { service_name: 'Database Service', slug: 'database-service', availability_target: 99.99, availability_actual: 99.97, latency_target_ms: 30, latency_actual_ms: 18.4, error_budget_remaining: 75, error_budget_total: 100, error_budget_pct_remaining: 75.0, is_meeting_slo: true, window_days: 30 },
+  {
+    service_name: 'Claims API',
+    slug: 'claims-api',
+    availability_target: 99.9,
+    availability_actual: 99.98,
+    latency_target_ms: 100,
+    latency_actual_ms: 45.2,
+    latency_p95_target_ms: 100,
+    latency_p95_actual_ms: 45.2,
+    error_rate_target: 0.1,
+    error_rate_actual: 0.02,
+    error_budget_remaining: 80,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 80.0,
+    is_meeting_slo: true,
+    window_days: 30,
+  },
+  {
+    service_name: 'Provider Portal',
+    slug: 'provider-portal',
+    availability_target: 99.9,
+    availability_actual: 99.95,
+    latency_target_ms: 120,
+    latency_actual_ms: 62.8,
+    latency_p95_target_ms: 120,
+    latency_p95_actual_ms: 62.8,
+    error_rate_target: 0.1,
+    error_rate_actual: 0.03,
+    error_budget_remaining: 70,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 70.0,
+    is_meeting_slo: true,
+    window_days: 30,
+  },
+  {
+    service_name: 'Pharmacy Service',
+    slug: 'pharmacy-service',
+    availability_target: 99.5,
+    availability_actual: 99.20,
+    latency_target_ms: 100,
+    latency_actual_ms: 180.5,
+    latency_p95_target_ms: 100,
+    latency_p95_actual_ms: 180.5,
+    error_rate_target: 0.5,
+    error_rate_actual: 0.82,
+    error_budget_remaining: 18,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 18.0,
+    is_meeting_slo: false,
+    window_days: 30,
+  },
+  {
+    service_name: 'Identity Service',
+    slug: 'identity-service',
+    availability_target: 99.99,
+    availability_actual: 99.99,
+    latency_target_ms: 50,
+    latency_actual_ms: 22.1,
+    latency_p95_target_ms: 50,
+    latency_p95_actual_ms: 22.1,
+    error_rate_target: 0.01,
+    error_rate_actual: 0.005,
+    error_budget_remaining: 95,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 95.0,
+    is_meeting_slo: true,
+    window_days: 30,
+  },
+  {
+    service_name: 'Notification Service',
+    slug: 'notification-service',
+    availability_target: 99.5,
+    availability_actual: 99.99,
+    latency_target_ms: 80,
+    latency_actual_ms: 35.0,
+    latency_p95_target_ms: 80,
+    latency_p95_actual_ms: 35.0,
+    error_rate_target: 0.5,
+    error_rate_actual: 0.01,
+    error_budget_remaining: 92,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 92.0,
+    is_meeting_slo: true,
+    window_days: 30,
+  },
+  {
+    service_name: 'Database Service',
+    slug: 'database-service',
+    availability_target: 99.99,
+    availability_actual: 99.97,
+    latency_target_ms: 30,
+    latency_actual_ms: 18.4,
+    latency_p95_target_ms: 30,
+    latency_p95_actual_ms: 18.4,
+    error_rate_target: 0.01,
+    error_rate_actual: 0.008,
+    error_budget_remaining: 75,
+    error_budget_total: 100,
+    error_budget_pct_remaining: 75.0,
+    is_meeting_slo: true,
+    window_days: 30,
+  },
 ]
 
 export const MOCK_AUDIT_LOGS = [
-  { id: 'aud-1', user_email: 'sre@healthtechops.local', user_role: 'SRE_ENGINEER', action: 'RUNBOOK_EXECUTE', resource_type: 'runbook', resource_id: 'clear-cache', outcome: 'SUCCESS', ip_address: '10.0.1.42', created_at: new Date(Date.now() - 15 * 60000).toISOString() },
-  { id: 'aud-2', user_email: 'admin@healthtechops.local', user_role: 'ADMIN', action: 'INCIDENT_ACKNOWLEDGE', resource_type: 'incident', resource_id: 'inc-001', outcome: 'SUCCESS', ip_address: '10.0.1.12', created_at: new Date(Date.now() - 40 * 60000).toISOString() },
-  { id: 'aud-3', user_email: 'admin@healthtechops.local', user_role: 'ADMIN', action: 'AI_INVESTIGATION_TRIGGER', resource_type: 'incident', resource_id: 'inc-001', outcome: 'SUCCESS', ip_address: '10.0.1.12', created_at: new Date(Date.now() - 41 * 60000).toISOString() },
-  { id: 'aud-4', user_email: 'sre@healthtechops.local', user_role: 'SRE_ENGINEER', action: 'SERVICE_FAILURE_INJECT', resource_type: 'service', resource_id: 'pharmacy-service', outcome: 'SUCCESS', ip_address: '10.0.1.42', created_at: new Date(Date.now() - 90 * 60000).toISOString() },
-  { id: 'aud-5', user_email: 'admin@healthtechops.local', user_role: 'ADMIN', action: 'USER_LOGIN', resource_type: 'auth', resource_id: 'admin@healthtechops.local', outcome: 'SUCCESS', ip_address: '10.0.1.12', created_at: new Date(Date.now() - 120 * 60000).toISOString() },
+  {
+    id: 'aud-1',
+    user_email: 'sre@healthtechops.local',
+    user_role: 'SRE_ENGINEER',
+    action: 'RUNBOOK_EXECUTE',
+    resource_type: 'runbook',
+    resource_id: 'clear-cache',
+    outcome: 'success',
+    timestamp: new Date(Date.now() - 15 * 60000).toISOString(),
+    details: 'Runbook clear-cache executed on pharmacy-service',
+  },
+  {
+    id: 'aud-2',
+    user_email: 'admin@healthtechops.local',
+    user_role: 'ADMIN',
+    action: 'INCIDENT_ACKNOWLEDGE',
+    resource_type: 'incident',
+    resource_id: 'inc-001',
+    outcome: 'success',
+    timestamp: new Date(Date.now() - 40 * 60000).toISOString(),
+    details: 'Incident acknowledged by on-call engineer',
+  },
+  {
+    id: 'aud-3',
+    user_email: 'admin@healthtechops.local',
+    user_role: 'ADMIN',
+    action: 'AI_INVESTIGATION_TRIGGER',
+    resource_type: 'incident',
+    resource_id: 'inc-001',
+    outcome: 'success',
+    timestamp: new Date(Date.now() - 41 * 60000).toISOString(),
+    details: 'Ollama llama3.2 investigation dispatched',
+  },
+  {
+    id: 'aud-4',
+    user_email: 'sre@healthtechops.local',
+    user_role: 'SRE_ENGINEER',
+    action: 'SERVICE_FAILURE_INJECT',
+    resource_type: 'service',
+    resource_id: 'pharmacy-service',
+    outcome: 'success',
+    timestamp: new Date(Date.now() - 90 * 60000).toISOString(),
+    details: 'Injected cpu_spike for 60s',
+  },
+  {
+    id: 'aud-5',
+    user_email: 'admin@healthtechops.local',
+    user_role: 'ADMIN',
+    action: 'USER_LOGIN',
+    resource_type: 'auth',
+    resource_id: 'admin@healthtechops.local',
+    outcome: 'success',
+    timestamp: new Date(Date.now() - 120 * 60000).toISOString(),
+    details: 'JWT session authenticated',
+  },
 ]
 
 export function getMockFallback<T>(path: string, method: string = 'GET', _body?: any): T | undefined {
   const clean = path.split('?')[0].replace(/\/+$/, '')
+
+  // Health
+  if (clean === '/health') {
+    return {
+      status: 'healthy',
+      version: '1.0.0-rc1',
+      timestamp: new Date().toISOString(),
+      services_total: 6,
+      ai_engine: 'online',
+    } as T
+  }
 
   // Auth me
   if (clean === '/auth/me') {
     return DEMO_USERS['admin@healthtechops.local'] as T
   }
 
-  // Overview
+  // Overview Dashboard (Must return exact shape Overview.tsx consumes)
   if (clean === '/overview') {
     return {
-      system_health: 'HEALTHY',
-      active_services: 6,
-      total_services: 6,
-      open_incidents: 1,
-      critical_incidents: 0,
-      reliability_score: 99.94,
-      services: MOCK_SERVICES,
-      incidents: MOCK_INCIDENTS,
-      recent_audits: MOCK_AUDIT_LOGS.slice(0, 5),
+      services: {
+        total: 6,
+        healthy: 5,
+        degraded: 1,
+        down: 0,
+      },
+      incidents: {
+        open: 1,
+        critical: 0,
+      },
+      system_health: 'DEGRADED',
+      recent_incidents: [
+        {
+          id: 'inc-001',
+          title: 'Pharmacy Service Elevated P95 Latency',
+          severity: 'HIGH',
+          status: 'INVESTIGATING',
+          detected_at: new Date(Date.now() - 42 * 60000).toISOString(),
+          service_id: '3',
+          service_name: 'Pharmacy Service',
+        },
+        {
+          id: 'inc-002',
+          title: 'Provider Portal Transient 502 Bad Gateway',
+          severity: 'MEDIUM',
+          status: 'RESOLVED',
+          detected_at: new Date(Date.now() - 24 * 3600000).toISOString(),
+          service_id: '2',
+          service_name: 'Provider Portal',
+        },
+        {
+          id: 'inc-003',
+          title: 'Claims API Spike in 429 Rate Limits',
+          severity: 'LOW',
+          status: 'CLOSED',
+          detected_at: new Date(Date.now() - 72 * 3600000).toISOString(),
+          service_id: '1',
+          service_name: 'Claims API',
+        },
+      ],
     } as T
   }
 
-  // Services
+  // Services Catalog
   if (clean === '/services') {
     return MOCK_SERVICES as T
   }
   if (clean.startsWith('/services/')) {
-    const slug = clean.split('/')[2]
+    const parts = clean.split('/')
+    const slug = parts[2]
     if (clean.endsWith('/logs')) {
       return [
-        { id: 1, timestamp: new Date(Date.now() - 30000).toISOString(), level: 'INFO', message: `HTTP GET /health 200 OK — latency: 12ms`, service: slug },
-        { id: 2, timestamp: new Date(Date.now() - 60000).toISOString(), level: 'INFO', message: `Processed request batch (count: 42, error: 0)`, service: slug },
-        { id: 3, timestamp: new Date(Date.now() - 90000).toISOString(), level: 'WARN', message: `Connection pool latency elevated (58ms)`, service: slug },
+        { id: 1, timestamp: new Date(Date.now() - 15000).toISOString(), level: 'INFO', message: `HTTP GET /health 200 OK — latency: 14ms`, service: slug },
+        { id: 2, timestamp: new Date(Date.now() - 45000).toISOString(), level: 'INFO', message: `Batch payload ingested successfully: 128 claims processed`, service: slug },
+        { id: 3, timestamp: new Date(Date.now() - 75000).toISOString(), level: 'WARN', message: `Connection pool thread acquisition delayed: 62ms > 50ms target`, service: slug },
+        { id: 4, timestamp: new Date(Date.now() - 120000).toISOString(), level: 'INFO', message: `Telemetry heartbeat dispatched to monitoring agent: port 9100`, service: slug },
       ] as T
     }
     if (clean.endsWith('/inject-failure')) {
-      return { message: 'Synthetic failure injected', service: slug } as T
+      return { success: true, message: 'Synthetic failure injected into microservice', service: slug } as T
     }
     const found = MOCK_SERVICES.find((s) => s.slug === slug) || MOCK_SERVICES[0]
     return found as T
@@ -175,9 +535,11 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
     return inc as T
   }
 
-  // AI & Remediation
+  // AI Investigation & Status
   if (clean === '/ai/status') {
     return {
+      available: true,
+      configured_model: 'llama3.2',
       status: 'ONLINE',
       model: 'llama3.2',
       provider: 'ollama (synthetic engine)',
@@ -202,27 +564,30 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
       model_name: 'llama3.2',
       status: 'COMPLETED',
       root_cause_summary:
-        'Sustained thread blockage observed in connection pooling layer following high-volume batch dispatch. Recommend connection pool flush and service replica scale up.',
+        'Sustained thread blockage observed in connection pooling layer following high-volume batch dispatch. Worker threads reached maximum timeout waiting for idle database connections.',
       evidence_items: [
         'P95 latency elevated to 180.5ms (target: 100ms)',
-        'Active database pool connections saturated at 98%',
+        'Active database pool connections saturated at 98% capacity',
+        'Error rate increased by 3.8% across claims adjudication endpoints',
         'Zero container hardware crashes observed across worker nodes',
       ],
-      recommended_actions: ['flush_connection_pool', 'restart_service', 'scale_up_replicas'],
+      recommended_actions: ['restart_service', 'flush_connection_pool', 'scale_up_replicas'],
       confidence_score: 0.94,
       started_at: new Date(Date.now() - 10 * 60000).toISOString(),
       completed_at: new Date(Date.now() - 9 * 60000).toISOString(),
     } as T
   }
 
-  // Remediation
+  // Remediation & Approvals
   if (clean === '/remediation/request') {
     return {
       id: `rem-${Date.now()}`,
       action_name: 'restart_service',
+      incident_id: 'inc-001',
       risk_level: 'MEDIUM',
       status: 'PENDING_APPROVAL',
       requested_at: new Date().toISOString(),
+      requested_by: 'admin@healthtechops.local',
     } as T
   }
   if (clean === '/remediation/pending') {
@@ -230,9 +595,26 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
   }
   if (clean === '/remediation' || clean.startsWith('/remediation/')) {
     if (clean.endsWith('/approve') || clean.endsWith('/reject')) {
-      return { status: 'APPROVED', executed: true, timestamp: new Date().toISOString() } as T
+      return { success: true, status: 'APPROVED', executed: true, timestamp: new Date().toISOString() } as T
     }
-    return MOCK_REMEDIATION_PENDING as T
+    return [
+      {
+        id: 'rem-hist-01',
+        action_name: 'restart_service',
+        status: 'COMPLETED',
+        executed_at: new Date(Date.now() - 3600000).toISOString(),
+        completed_at: new Date(Date.now() - 3550000).toISOString(),
+        recovery_verified: true,
+      },
+      {
+        id: 'rem-hist-02',
+        action_name: 'rollback_deployment',
+        status: 'COMPLETED',
+        executed_at: new Date(Date.now() - 86400000).toISOString(),
+        completed_at: new Date(Date.now() - 86300000).toISOString(),
+        recovery_verified: true,
+      },
+    ] as T
   }
 
   // Runbooks
@@ -240,29 +622,29 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
     return MOCK_RUNBOOKS as T
   }
   if (clean.startsWith('/runbooks/') && clean.endsWith('/execute')) {
-    return { status: 'EXECUTING', steps_total: 5, steps_completed: 1 } as T
+    return { success: true, status: 'EXECUTING', steps_total: 5, steps_completed: 1 } as T
   }
 
-  // SLO & MTTx
+  // SLO & MTTx Metrics
   if (clean === '/slo') {
     return MOCK_SLO_STATUS as T
   }
   if (clean === '/slo/mttd-mttr') {
     return {
-      mttd_minutes: 3.2,
-      mttr_minutes: 14.5,
+      mttd_minutes: 2.8,
+      mttr_minutes: 14.2,
       total_resolved: 24,
       total_incidents: 25,
       availability_overall: 99.94,
     } as T
   }
 
-  // Observability
+  // Observability: Metrics, Logs, Traces
   if (clean === '/observability/metrics') {
     const times = Array.from({ length: 12 }, (_, i) => {
       const d = new Date(Date.now() - (11 - i) * 5 * 60000)
       return {
-        timestamp: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: d.toISOString(),
         cpu: Math.round(25 + Math.sin(i) * 15 + Math.random() * 5),
         memory: Math.round(45 + Math.cos(i) * 10 + Math.random() * 4),
         network: Math.round(120 + Math.sin(i * 0.5) * 40),
@@ -273,26 +655,57 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
   if (clean === '/observability/logs') {
     return {
       logs: [
-        { timestamp: new Date().toISOString(), level: 'INFO', service: 'claims-api', message: 'Claims batch processed: 142 records adjudicated' },
-        { timestamp: new Date(Date.now() - 15000).toISOString(), level: 'WARN', service: 'pharmacy-service', message: 'DB connection latency: 180ms > 100ms threshold' },
+        { timestamp: new Date().toISOString(), level: 'INFO', service: 'claims-api', message: 'Claims batch processed: 142 records adjudicated without error' },
+        { timestamp: new Date(Date.now() - 15000).toISOString(), level: 'WARN', service: 'pharmacy-service', message: 'DB connection latency: 180.5ms > 100ms threshold' },
         { timestamp: new Date(Date.now() - 30000).toISOString(), level: 'INFO', service: 'identity-service', message: 'OAuth 2.0 PKCE token issued for user admin' },
-        { timestamp: new Date(Date.now() - 45000).toISOString(), level: 'INFO', service: 'notification-service', message: 'Dispatched encrypted SMS alert payload' },
-        { timestamp: new Date(Date.now() - 60000).toISOString(), level: 'INFO', service: 'database-service', message: 'Replication sync complete: 0 lag across secondaries' },
+        { timestamp: new Date(Date.now() - 45000).toISOString(), level: 'INFO', service: 'notification-service', message: 'Dispatched encrypted SMS alert payload to provider pool' },
+        { timestamp: new Date(Date.now() - 60000).toISOString(), level: 'INFO', service: 'database-service', message: 'Replication sync complete: 0 lag across primary secondaries' },
       ],
     } as T
   }
   if (clean === '/observability/traces') {
     return {
       traces: [
-        { trace_id: 'tr-001', service: 'claims-api', endpoint: 'POST /v1/claims', duration_ms: 45, status: 'SUCCESS' },
-        { trace_id: 'tr-002', service: 'pharmacy-service', endpoint: 'GET /v1/prescriptions', duration_ms: 180, status: 'SLOW' },
-        { trace_id: 'tr-003', service: 'identity-service', endpoint: 'POST /oauth/token', duration_ms: 22, status: 'SUCCESS' },
+        {
+          trace_id: 'tr-001',
+          service: 'claims-api',
+          endpoint: 'POST /v1/claims',
+          duration_ms: 45,
+          status: 'ok',
+          spans: [
+            { service: 'claims-api', operation: 'HTTP POST /v1/claims', duration_ms: 45 },
+            { service: 'identity-service', operation: 'JWT Token Verify', duration_ms: 12 },
+            { service: 'database-service', operation: 'Insert Claim Record', duration_ms: 28 },
+          ],
+        },
+        {
+          trace_id: 'tr-002',
+          service: 'pharmacy-service',
+          endpoint: 'GET /v1/prescriptions',
+          duration_ms: 180,
+          status: 'error',
+          spans: [
+            { service: 'pharmacy-service', operation: 'GET /v1/prescriptions', duration_ms: 180 },
+            { service: 'database-service', operation: 'Pool Connection Acquire (Blocked)', duration_ms: 165 },
+          ],
+        },
+        {
+          trace_id: 'tr-003',
+          service: 'provider-portal',
+          endpoint: 'GET /v1/providers',
+          duration_ms: 32,
+          status: 'ok',
+          spans: [
+            { service: 'provider-portal', operation: 'GET /v1/providers', duration_ms: 32 },
+            { service: 'identity-service', operation: 'Session Cache Check', duration_ms: 8 },
+          ],
+        },
       ],
     } as T
   }
 
-  // Infrastructure
-  if (clean === '/infrastructure/metrics') {
+  // Infrastructure Telemetry
+  if (clean === '/infrastructure/metrics' || clean === '/infrastructure') {
     return {
       cpu: { percent: 34.2, count: 8 },
       memory: { percent: 58.4, total_gb: 16.0, used_gb: 9.3, available_gb: 6.7 },
@@ -308,25 +721,70 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
     } as T
   }
 
-  // Audit
+  // Immutable Audit Logs
   if (clean === '/audit') {
     return MOCK_AUDIT_LOGS as T
   }
 
-  // Evaluation
+  // AI Evaluation Benchmark Suite
   if (clean === '/evaluation/test-cases') {
     return [
-      { id: 'tc-1', name: 'High API Latency', description: 'P95 latency over 3 seconds', expected_root_cause: 'Slow downstream dependency or query', expected_actions: ['increase_timeout', 'clear_cache'] },
-      { id: 'tc-2', name: 'Connection Pool Exhausted', description: 'All database connections saturated', expected_root_cause: 'Connection leak or insufficient pool size', expected_actions: ['flush_connection_pool', 'restart_service'] },
-      { id: 'tc-3', name: 'CPU Spike', description: 'CPU at 98% sustained for 10 minutes', expected_root_cause: 'Inefficient algorithm or thread loop', expected_actions: ['scale_up_replicas', 'rollback_deployment'] },
-      { id: 'tc-4', name: 'Error Rate Surge Post-Deploy', description: 'Error rate jumped from 0.1% to 8% after deploy', expected_root_cause: 'Bad deployment regression', expected_actions: ['rollback_deployment'] },
-      { id: 'tc-5', name: 'Memory Leak', description: 'Container RAM growth over 48 hours', expected_root_cause: 'Unbounded cache retention', expected_actions: ['clear_cache', 'restart_service'] },
+      {
+        id: 'tc-1',
+        name: 'Claims API CPU Saturation',
+        description: 'P95 latency elevated over 3 seconds during batch claims adjudication',
+        expected_root_cause: 'Unbounded loop in batch claims processing parser',
+        expected_actions: ['restart_service', 'scale_up_replicas'],
+        synthetic_incident: { severity: 'CRITICAL' },
+      },
+      {
+        id: 'tc-2',
+        name: 'Pharmacy Connection Pool Exhaustion',
+        description: 'All 100 database connections saturated with hung worker threads',
+        expected_root_cause: 'Connection leak in prescription formulary lookup query',
+        expected_actions: ['flush_connection_pool', 'restart_service'],
+        synthetic_incident: { severity: 'HIGH' },
+      },
+      {
+        id: 'tc-3',
+        name: 'Provider Portal Transient 502',
+        description: 'Upstream worker process killed by operating system OOM killer',
+        expected_root_cause: 'Memory leak during large provider roster query',
+        expected_actions: ['rollback_deployment', 'clear_cache'],
+        synthetic_incident: { severity: 'MEDIUM' },
+      },
+      {
+        id: 'tc-4',
+        name: 'Identity Service OAuth Token Timeout',
+        description: 'Token verification latency exceeded 250ms SLA boundary',
+        expected_root_cause: 'Cache miss storm following Redis replica restart',
+        expected_actions: ['clear_cache', 'scale_up_replicas'],
+        synthetic_incident: { severity: 'MEDIUM' },
+      },
     ] as T
   }
   if (clean === '/evaluation/runs') {
     return [
-      { id: 1, created_at: new Date(Date.now() - 3600000).toISOString(), total_cases: 5, passed_cases: 5, accuracy_score: 95.0, status: 'COMPLETED' },
-      { id: 2, created_at: new Date(Date.now() - 86400000).toISOString(), total_cases: 5, passed_cases: 4, accuracy_score: 90.0, status: 'COMPLETED' },
+      {
+        id: 1,
+        started_at: new Date(Date.now() - 3600000).toISOString(),
+        completed_at: new Date(Date.now() - 3500000).toISOString(),
+        model_name: 'llama3.2',
+        total_cases: 4,
+        correct_root_causes: 4,
+        avg_evidence_score: 0.94,
+        unsafe_action_count: 0,
+      },
+      {
+        id: 2,
+        started_at: new Date(Date.now() - 86400000).toISOString(),
+        completed_at: new Date(Date.now() - 86300000).toISOString(),
+        model_name: 'llama3.2',
+        total_cases: 4,
+        correct_root_causes: 3,
+        avg_evidence_score: 0.88,
+        unsafe_action_count: 0,
+      },
     ] as T
   }
   if (clean === '/evaluation/run') {
@@ -335,4 +793,3 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
 
   return undefined
 }
-

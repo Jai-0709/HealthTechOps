@@ -13,7 +13,16 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (token) headers['Authorization'] = `Bearer ${token}`
 
   try {
-    const res = await fetch(`${API_PREFIX}${path}`, { ...options, headers })
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 2500)
+
+    const res = await fetch(`${API_PREFIX}${path}`, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    })
+    clearTimeout(timeoutId)
+
     if (res.status === 401) {
       useAuthStore.getState().logout()
       window.location.href = '/login'
