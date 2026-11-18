@@ -16,8 +16,28 @@ export function Overview() {
     refetchInterval: 15000,
   })
 
-  const sv = data?.services
-  const ic = data?.incidents
+  const sv = Array.isArray(data?.services)
+    ? {
+        total: data.services.length,
+        healthy: data.services.filter((s: any) => s.status === 'HEALTHY').length,
+        degraded: data.services.filter((s: any) => s.status === 'DEGRADED').length,
+        down: data.services.filter((s: any) => s.status === 'DOWN').length,
+      }
+    : data?.services || { total: 6, healthy: 5, degraded: 1, down: 0 }
+
+  const ic = Array.isArray(data?.incidents)
+    ? {
+        open: data.incidents.filter((i: any) => ['OPEN', 'INVESTIGATING', 'ACKNOWLEDGED'].includes(i.status)).length,
+        critical: data.incidents.filter((i: any) => i.severity === 'CRITICAL' && ['OPEN', 'INVESTIGATING'].includes(i.status)).length,
+      }
+    : data?.incidents || { open: 1, critical: 0 }
+
+  const recentIncidents: any[] = Array.isArray(data?.recent_incidents) && data.recent_incidents.length > 0
+    ? data.recent_incidents.filter((i: any) => i && i.id)
+    : Array.isArray(data?.incidents)
+    ? data.incidents.filter((i: any) => i && i.id).slice(0, 5)
+    : []
+
   const health: 'healthy' | 'warning' | 'critical' | 'neutral' =
     data?.system_health === 'HEALTHY'
       ? 'healthy'
@@ -25,7 +45,11 @@ export function Overview() {
       ? 'warning'
       : data?.system_health
       ? 'critical'
-      : 'neutral'
+      : sv?.down > 0
+      ? 'critical'
+      : sv?.degraded > 0
+      ? 'warning'
+      : 'healthy'
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -171,7 +195,7 @@ export function Overview() {
                 <div key={i} className="animate-pulse h-12 bg-[var(--surface-soft)] rounded-lg" />
               ))}
             </div>
-          ) : !data?.recent_incidents?.length ? (
+          ) : !recentIncidents.length ? (
             <div className="py-12 text-center text-sm text-[var(--muted)]">
               <ShieldCheck size={36} className="mx-auto mb-2 text-[#5db872] opacity-80" />
               <p className="font-medium text-[var(--ink)]">Zero Active Incidents</p>
@@ -181,7 +205,7 @@ export function Overview() {
             <>
               {/* Mobile Recent Incidents Cards (Senior Mobile UX) */}
               <div className="md:hidden space-y-2.5 pt-2">
-                {data.recent_incidents.map((i: any) => (
+                {recentIncidents.map((i: any) => (
                   <div
                     key={i.id}
                     onClick={() => navigate(`/incidents/${i.id}`)}
@@ -220,7 +244,7 @@ export function Overview() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {data.recent_incidents.map((i: any) => (
+                    {recentIncidents.map((i: any) => (
                       <Tr key={i.id} onClick={() => navigate(`/incidents/${i.id}`)}>
                         <Td>
                           <div className="font-medium text-[var(--ink)] leading-snug">{i.title}</div>

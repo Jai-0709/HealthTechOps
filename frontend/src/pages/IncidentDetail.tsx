@@ -69,7 +69,7 @@ export function IncidentDetail() {
 
           <div>
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="text-xs font-mono text-[var(--muted)]">INC-{incident.id.slice(0, 8)}</span>
+              <span className="text-xs font-mono text-[var(--muted)]">INC-{incident?.id ? incident.id.slice(0, 8) : '—'}</span>
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />
               {incident.service_name && (

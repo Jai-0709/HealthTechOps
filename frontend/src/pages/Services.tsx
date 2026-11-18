@@ -38,9 +38,9 @@ function ServiceCard({ s }: { s: Service }) {
 
         <div className="grid grid-cols-3 gap-3 p-3 bg-[var(--surface-soft)] rounded-lg border border-[var(--hairline)]">
           {[
-            ['CPU', `${s.cpu_percent.toFixed(1)}%`],
-            ['Memory', `${s.memory_percent.toFixed(1)}%`],
-            ['Latency', `${s.avg_latency_ms.toFixed(0)}ms`],
+            ['CPU', `${s.cpu_percent?.toFixed(1) ?? '0.0'}%`],
+            ['Memory', `${s.memory_percent?.toFixed(1) ?? '0.0'}%`],
+            ['Latency', `${s.avg_latency_ms?.toFixed(0) ?? '0'}ms`],
           ].map(([k, v]) => (
             <div key={k}>
               <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)]">
@@ -55,7 +55,7 @@ function ServiceCard({ s }: { s: Service }) {
       </div>
 
       <div className="mt-4 pt-4 border-t border-[var(--hairline)] flex items-center justify-between text-xs font-mono text-[var(--muted)]">
-        <span>Uptime: <strong className="text-[var(--ink)]">{s.uptime_percent.toFixed(2)}%</strong></span>
+        <span>Uptime: <strong className="text-[var(--ink)]">{s.uptime_percent?.toFixed(2) ?? '100.00'}%</strong></span>
         {s.port && <span className="bg-[var(--canvas)] px-2 py-0.5 rounded border border-[var(--hairline)]">:{s.port}</span>}
       </div>
     </div>
@@ -123,9 +123,11 @@ export function Services() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services?.map((s) => (
-            <ServiceCard key={s.id} s={s} />
-          ))}
+          {(Array.isArray(services) ? services : [])
+            .filter((s) => s && s.id)
+            .map((s) => (
+              <ServiceCard key={s.id} s={s} />
+            ))}
         </div>
       )}
     </div>

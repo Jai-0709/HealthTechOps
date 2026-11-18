@@ -170,6 +170,10 @@ export function Automation() {
     refetchInterval: 15000,
   })
 
+  const safeRunbooks = Array.isArray(runbooks) ? runbooks.filter((r) => r && r.id) : []
+  const safePending = Array.isArray(pending) ? pending.filter((r) => r && r.id) : []
+  const safeHistory = Array.isArray(history) ? history.filter((r) => r && r.id) : []
+
   const approve = useMutation({
     mutationFn: (id: string) => api.post(`/remediation/${id}/approve`),
     onSuccess: () => {
@@ -278,13 +282,13 @@ export function Automation() {
               <CardDescription>Deterministic recovery procedures verified against synthetic environment</CardDescription>
             </div>
             <span className="text-xs font-mono text-[var(--muted)]">
-              {runbooks?.length ?? 0} available
+              {safeRunbooks.length} available
             </span>
           </CardHeader>
 
           {/* Mobile Runbooks Cards */}
           <div className="md:hidden space-y-3 pt-2">
-            {runbooks?.map((rb) => (
+            {safeRunbooks.map((rb) => (
               <RunbookCard
                 key={rb.id}
                 rb={rb}
@@ -307,7 +311,7 @@ export function Automation() {
                 </Tr>
               </Thead>
               <Tbody>
-                {runbooks?.map((rb) => (
+                {safeRunbooks.map((rb) => (
                   <RunbookRow
                     key={rb.id}
                     rb={rb}
@@ -333,7 +337,7 @@ export function Automation() {
 
           {pendingLoading ? (
             <div className="py-12 text-center text-sm text-[var(--muted)]">Checking approval queue...</div>
-          ) : !pending?.length ? (
+          ) : !safePending.length ? (
             <div className="py-12">
               <EmptyState
                 icon={<CheckCircle size={40} className="text-[#5db872] opacity-80" />}
@@ -349,7 +353,7 @@ export function Automation() {
             <>
               {/* Mobile Pending Cards */}
               <div className="md:hidden space-y-3 pt-2">
-                {pending.map((r: any) => (
+                {safePending.map((r: any) => (
                   <div key={r.id} className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="font-mono text-xs font-semibold text-[var(--ink)]">
@@ -399,7 +403,7 @@ export function Automation() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {pending.map((r: any) => (
+                    {safePending.map((r: any) => (
                       <Tr key={r.id}>
                         <Td>
                           <div className="font-mono text-xs font-medium text-[var(--ink)]">
@@ -459,7 +463,7 @@ export function Automation() {
             </span>
           </CardHeader>
 
-          {!history?.length ? (
+          {!safeHistory.length ? (
             <div className="py-12">
               <EmptyState
                 icon={<Wrench size={40} className="text-[var(--primary)] opacity-80" />}
@@ -471,7 +475,7 @@ export function Automation() {
             <>
               {/* Mobile History Cards */}
               <div className="md:hidden space-y-3 pt-2">
-                {history.map((r: any) => (
+                {safeHistory.map((r: any) => (
                   <div key={r.id} className="p-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-soft)] space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <span className="font-mono text-xs font-semibold text-[var(--ink)]">
@@ -510,7 +514,7 @@ export function Automation() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {history.map((r: any) => (
+                    {safeHistory.map((r: any) => (
                       <Tr key={r.id}>
                         <Td>
                           <span className="font-mono text-xs font-medium text-[var(--ink)]">

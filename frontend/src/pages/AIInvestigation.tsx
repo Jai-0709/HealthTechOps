@@ -57,10 +57,12 @@ export function AIInvestigation() {
     onError: (e: any) => toast.error(e.message || 'Failed to queue remediation'),
   })
 
-  const selected = incidents?.find((i) => i.id === selectedId)
+  const selected =
+    incidents?.find((i) => i && i.id === selectedId) ||
+    (incidents && incidents.length > 0 ? incidents[0] : null)
 
   useEffect(() => {
-    if (!selectedId && incidents && incidents.length > 0) {
+    if (!selectedId && incidents && Array.isArray(incidents) && incidents.length > 0 && incidents[0]?.id) {
       setSelectedId(incidents[0].id)
     }
   }, [incidents, selectedId])
@@ -348,7 +350,7 @@ export function AIInvestigation() {
 
                       {/* Metadata Footer */}
                       <div className="pt-4 border-t border-[#2e2b27] flex flex-wrap items-center justify-between text-[11px] font-mono text-[#a09d96]">
-                        <span>ID: {investigation.id}</span>
+                        <span>ID: {investigation?.id || '—'}</span>
                         <span>Completed: {formatDate(investigation.completed_at)}</span>
                       </div>
                     </div>
@@ -370,7 +372,7 @@ export function AIInvestigation() {
                 <div className="p-8 border border-dashed border-[var(--hairline)] rounded-xl bg-[var(--surface-soft)] text-center space-y-2">
                   <Bot size={32} className="mx-auto text-[var(--muted)]" />
                   <p className="text-sm font-medium text-[var(--ink)]">
-                    Ready to Analyze Incident #{selected.id.slice(0, 8)}
+                    Ready to Analyze Incident #{selected?.id ? selected.id.slice(0, 8) : (selectedId ? selectedId.slice(0, 8) : '—')}
                   </p>
                   <p className="text-xs text-[var(--muted)] max-w-md mx-auto">
                     Click &ldquo;Run AI Diagnostics&rdquo; to send the incident payload and telemetry logs to local Ollama.

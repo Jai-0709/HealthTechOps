@@ -380,26 +380,29 @@ export function CommandPalette({
 
     // Append active incidents dynamically
     if (incidents && Array.isArray(incidents)) {
-      incidents.slice(0, 5).forEach((inc) => {
-        items.push({
-          id: `incident-${inc.id}`,
-          title: inc.title,
-          subtitle: `${inc.service_name || 'System'} · ${inc.status}`,
-          category: 'Incidents',
-          icon: AlertTriangle,
-          action: () => {
-            navigate(`/ai-investigation?incident=${inc.id}`)
-            onClose()
-          },
-          badge: inc.severity,
-          badgeVariant:
-            inc.severity === 'CRITICAL'
-              ? 'danger'
-              : inc.severity === 'HIGH'
-              ? 'warning'
-              : 'info',
+      incidents
+        .filter((inc) => inc && inc.id)
+        .slice(0, 5)
+        .forEach((inc) => {
+          items.push({
+            id: `incident-${inc.id}`,
+            title: inc.title || 'Incident',
+            subtitle: `${inc.service_name || 'System'} · ${inc.status || 'OPEN'}`,
+            category: 'Incidents',
+            icon: AlertTriangle,
+            action: () => {
+              navigate(`/ai-investigation?incident_id=${inc.id}`)
+              onClose()
+            },
+            badge: inc.severity || 'MEDIUM',
+            badgeVariant:
+              inc.severity === 'CRITICAL'
+                ? 'danger'
+                : inc.severity === 'HIGH'
+                ? 'warning'
+                : 'info',
+          })
         })
-      })
     }
 
     return items

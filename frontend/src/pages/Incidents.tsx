@@ -29,7 +29,10 @@ export function Incidents() {
     refetchInterval: 15000,
   })
 
-  const filtered = data?.filter((i) => !search || i.title.toLowerCase().includes(search.toLowerCase())) ?? []
+  const filtered =
+    (Array.isArray(data) ? data : []).filter(
+      (i) => i && i.id && (!search || (i.title && i.title.toLowerCase().includes(search.toLowerCase())))
+    )
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
