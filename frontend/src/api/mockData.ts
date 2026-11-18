@@ -9,6 +9,9 @@ import {
   getCurrentScenario,
   triggerSimulateAnomaly,
   getDemoState,
+  addPendingRemediation,
+  approvePendingRemediation,
+  rejectPendingRemediation,
 } from './demoSimulation'
 
 export {
@@ -22,6 +25,9 @@ export {
   getCurrentScenario,
   triggerSimulateAnomaly,
   getDemoState,
+  addPendingRemediation,
+  approvePendingRemediation,
+  rejectPendingRemediation,
 }
 
 // Synthetic Demo / Offline Fallback Data for HealthTechOps Portfolio Presentation
@@ -550,28 +556,34 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
 
   // Remediation & Approvals
   if (clean === '/remediation/request') {
-    const scenario = getCurrentScenario()
-    return {
-      id: `rem-pending-${scenario.incidentId}`,
-      action_name: scenario.remediationAction,
-      incident_id: scenario.incidentId,
-      risk_level: scenario.riskLevel,
-      status: 'PENDING_APPROVAL',
-      requested_at: new Date().toISOString(),
-      requested_by: 'admin@healthtechops.local',
-    } as T
+    let parsed: any = {}
+    try {
+      if (typeof _body === 'string') {
+        parsed = JSON.parse(_body)
+      } else if (typeof _body === 'object' && _body !== null) {
+        parsed = _body
+      }
+    } catch {}
+
+    const actionName = parsed.action_name || getCurrentScenario().remediationAction
+    const incidentId = parsed.incident_id || getCurrentScenario().incidentId
+    const riskLevel = parsed.risk_level || 'MEDIUM'
+
+    return addPendingRemediation(actionName, incidentId, riskLevel) as T
   }
   if (clean === '/remediation/pending') {
     return getDemoPendingRemediations() as T
   }
   if (clean === '/remediation' || clean.startsWith('/remediation/')) {
     if (clean.endsWith('/approve')) {
-      const scenario = getCurrentScenario()
-      resolveCurrentAnomaly(scenario.remediationAction)
-      return { success: true, status: 'APPROVED', executed: true, timestamp: new Date().toISOString() } as T
+      const parts = clean.split('/')
+      const remId = parts[2]
+      return approvePendingRemediation(remId) as T
     }
     if (clean.endsWith('/reject')) {
-      return { success: true, status: 'REJECTED', executed: false, timestamp: new Date().toISOString() } as T
+      const parts = clean.split('/')
+      const remId = parts[2]
+      return rejectPendingRemediation(remId) as T
     }
     return getDemoRemediationHistory() as T
   }

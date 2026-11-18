@@ -16,6 +16,7 @@ export function AIInvestigation() {
   const preselect = searchParams.get('incident_id')
   const [selectedId, setSelectedId] = useState(preselect || '')
   const [invId, setInvId] = useState('')
+  const [queuedActions, setQueuedActions] = useState<string[]>([])
 
   const { data: incidents } = useQuery({
     queryKey: ['incidents-open'],
@@ -53,6 +54,7 @@ export function AIInvestigation() {
         risk_level: 'MEDIUM',
       }),
     onSuccess: (res: any) => {
+      setQueuedActions((prev) => [...prev, res.action_name])
       toast.success(`Action '${res.action_name}' queued for human review in Automation queue`)
       qc.invalidateQueries({ queryKey: ['remediation-pending'] })
     },
@@ -326,26 +328,35 @@ export function AIInvestigation() {
                             <span>Recommended Remediation (Allowlist-Guarded)</span>
                           </div>
                           <div className="flex flex-wrap gap-2.5">
-                            {investigation.recommended_actions.map((act: string) => (
-                              <div
-                                key={act}
-                                className="px-3 py-1.5 rounded-lg bg-[#252320] text-[#faf9f5] border border-[#5db8a6]/40 font-mono text-xs flex items-center gap-3"
-                              >
-                                <div className="flex items-center gap-1.5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#5db8a6]" />
-                                  <code>{act}</code>
-                                </div>
-                                <button
-                                  type="button"
-                                  disabled={queueRemediation.isPending}
-                                  onClick={() => queueRemediation.mutate(act)}
-                                  className="px-2 py-0.5 rounded bg-[#cc785c] text-white hover:bg-[#a9583e] text-[10px] font-sans font-medium transition-colors cursor-pointer"
-                                  title="Queue remediation for human approval in Automation"
+                            {investigation.recommended_actions.map((act: string) => {
+                              const isQueued = queuedActions.includes(act)
+                              return (
+                                <div
+                                  key={act}
+                                  className="px-3 py-1.5 rounded-lg bg-[#252320] text-[#faf9f5] border border-[#5db8a6]/40 font-mono text-xs flex items-center gap-3"
                                 >
-                                  Queue for Review →
-                                </button>
-                              </div>
-                            ))}
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#5db8a6]" />
+                                    <code>{act}</code>
+                                  </div>
+                                  {isQueued ? (
+                                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-sans font-medium inline-flex items-center gap-1 select-none">
+                                      <CheckCircle size={10} /> Queued
+                                    </span>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      disabled={queueRemediation.isPending}
+                                      onClick={() => queueRemediation.mutate(act)}
+                                      className="px-2 py-0.5 rounded bg-[#cc785c] text-white hover:bg-[#a9583e] text-[10px] font-sans font-medium transition-colors cursor-pointer active:scale-95"
+                                      title="Queue remediation for human approval in Automation"
+                                    >
+                                      Queue for Review →
+                                    </button>
+                                  )}
+                                </div>
+                              )
+                            })}
                           </div>
                         </div>
                       )}

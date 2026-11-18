@@ -221,8 +221,26 @@ export const BASE_SERVICES = [
 ]
 
 // Determine initial scenario and state
-// If page was reloaded or previous state was resolved, advance to next scenario
-function initializeDemoState(): { scenarioIdx: number; isResolved: boolean; history: any[] } {
+function createDefaultPendingList(scenario: DemoScenario): any[] {
+  return [
+    {
+      id: `rem-${scenario.incidentId}-${scenario.remediationAction}`,
+      action_name: scenario.remediationAction,
+      incident_id: scenario.incidentId,
+      risk_level: scenario.riskLevel,
+      status: 'PENDING_APPROVAL',
+      requested_at: new Date(Date.now() - 5 * 60000).toISOString(),
+      requested_by: 'admin@healthtechops.local',
+    },
+  ]
+}
+
+function initializeDemoState(): {
+  scenarioIdx: number
+  isResolved: boolean
+  pendingRemediations: any[]
+  history: any[]
+} {
   const isReload =
     typeof performance !== 'undefined' &&
     performance.getEntriesByType &&
@@ -231,32 +249,39 @@ function initializeDemoState(): { scenarioIdx: number; isResolved: boolean; hist
 
   let storedIdx = 0
   let storedResolved = false
+  let storedPending: any[] | null = null
 
   try {
     const rawIdx = sessionStorage.getItem('healthtechops_scenario_idx')
     const rawRes = sessionStorage.getItem('healthtechops_is_resolved')
+    const rawPending = sessionStorage.getItem('healthtechops_pending_remediations')
     if (rawIdx !== null) storedIdx = parseInt(rawIdx, 10) || 0
     if (rawRes !== null) storedResolved = rawRes === 'true'
+    if (rawPending !== null) storedPending = JSON.parse(rawPending)
   } catch {}
 
-  // If the user reloaded the page, or if the system had been solved in the previous view,
-  // rotate to the next degraded service so the workflow is ready to be demonstrated again!
   let nextIdx = storedIdx
   let nextResolved = storedResolved
 
   if (isReload || storedResolved) {
     nextIdx = (storedIdx + 1) % DEMO_SCENARIOS.length
     nextResolved = false
+    storedPending = null
   }
+
+  const scenario = DEMO_SCENARIOS[nextIdx % DEMO_SCENARIOS.length]
+  const pending = storedPending || createDefaultPendingList(scenario)
 
   try {
     sessionStorage.setItem('healthtechops_scenario_idx', nextIdx.toString())
     sessionStorage.setItem('healthtechops_is_resolved', nextResolved ? 'true' : 'false')
+    sessionStorage.setItem('healthtechops_pending_remediations', JSON.stringify(pending))
   } catch {}
 
   return {
     scenarioIdx: nextIdx,
     isResolved: nextResolved,
+    pendingRemediations: pending,
     history: [],
   }
 }
@@ -264,12 +289,137 @@ function initializeDemoState(): { scenarioIdx: number; isResolved: boolean; hist
 // Global Demo State in JavaScript runtime
 let demoState = initializeDemoState()
 
+function saveDemoState() {
+  try {
+    sessionStorage.setItem('healthtechops_scenario_idx', demoState.scenarioIdx.toString())
+    sessionStorage.setItem('healthtechops_is_resolved', demoState.isResolved ? 'true' : 'false')
+    sessionStorage.setItem(
+      'healthtechops_pending_remediations',
+      JSON.stringify(demoState.pendingRemediations)
+    )
+  } catch {}
+}
+
 export function getDemoState() {
   return demoState
 }
 
 export function getCurrentScenario(): DemoScenario {
   return DEMO_SCENARIOS[demoState.scenarioIdx % DEMO_SCENARIOS.length]
+}
+
+// Add a new remediation action to the pending queue (e.g. from AI triage recommendations)
+export function addPendingRemediation(actionName: string, incidentId?: string, riskLevel?: string) {
+  const scenario = getCurrentScenario()
+  const incId = incidentId || scenario.incidentId
+  const cleanAction = actionName.trim()
+  const id = `rem-${cleanAction.toLowerCase().replace(/[^a-z0-9_-]/g, '_')}-${incId}`
+
+  // If already queued, return it
+  const existing = demoState.pendingRemediations.find(
+    (r) => r.id === id || (r.action_name === cleanAction && r.incident_id === incId)
+  )
+  if (existing) {
+    return existing
+  }
+
+  const determinedRisk =
+    riskLevel === 'HIGH' || riskLevel === 'MEDIUM' || riskLevel === 'LOW'
+      ? riskLevel
+      : cleanAction.includes('restart') || cleanAction.includes('rollback') || cleanAction.includes('drain')
+      ? 'MEDIUM'
+      : 'LOW'
+
+  const newRem = {
+    id,
+    action_name: cleanAction,
+    incident_id: incId,
+    risk_level: determinedRisk,
+    status: 'PENDING_APPROVAL',
+    requested_at: new Date().toISOString(),
+    requested_by: 'admin@healthtechops.local',
+  }
+
+  demoState.pendingRemediations.push(newRem)
+  saveDemoState()
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('healthtechops-state-changed'))
+  }
+
+  return newRem
+}
+
+// Approve a specific pending remediation
+export function approvePendingRemediation(remediationId: string) {
+  const scenario = getCurrentScenario()
+  const idx = demoState.pendingRemediations.findIndex(
+    (r) => r.id === remediationId || r.action_name === remediationId
+  )
+  let item = null
+  if (idx !== -1) {
+    item = demoState.pendingRemediations.splice(idx, 1)[0]
+  }
+
+  const actionName = item?.action_name || remediationId || scenario.remediationAction
+
+  demoState.history.unshift({
+    id: `rem-exec-${Date.now()}`,
+    action_name: actionName,
+    status: 'COMPLETED',
+    risk_level: item?.risk_level || scenario.riskLevel,
+    incident_id: item?.incident_id || scenario.incidentId,
+    requested_at: item?.requested_at || new Date(Date.now() - 60000).toISOString(),
+    executed_at: new Date().toISOString(),
+    recovery_verified: true,
+    result: {
+      action: actionName,
+      service: scenario.serviceName,
+      status: 'SUCCESS',
+      telemetry: 'All SLO thresholds normalized. Error rate 0.00%. Latency normal.',
+    },
+  })
+
+  // Heal microservice and incident
+  demoState.isResolved = true
+  saveDemoState()
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('healthtechops-state-changed'))
+  }
+
+  return { success: true, status: 'APPROVED', executed: true, action_name: actionName }
+}
+
+// Reject a pending remediation
+export function rejectPendingRemediation(remediationId: string) {
+  const idx = demoState.pendingRemediations.findIndex(
+    (r) => r.id === remediationId || r.action_name === remediationId
+  )
+  if (idx !== -1) {
+    const item = demoState.pendingRemediations.splice(idx, 1)[0]
+    demoState.history.unshift({
+      id: `rem-rej-${Date.now()}`,
+      action_name: item.action_name,
+      status: 'REJECTED',
+      risk_level: item.risk_level,
+      incident_id: item.incident_id,
+      requested_at: item.requested_at,
+      executed_at: new Date().toISOString(),
+      recovery_verified: false,
+      result: {
+        action: item.action_name,
+        status: 'REJECTED_BY_OPERATOR',
+      },
+    })
+    saveDemoState()
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('healthtechops-state-changed'))
+  }
+
+  return { success: true, status: 'REJECTED', executed: false }
 }
 
 // Manually trigger or rotate to the next degradation scenario (e.g. from UI button)
@@ -280,11 +430,9 @@ export function triggerSimulateAnomaly(specificIndex?: number): DemoScenario {
     demoState.scenarioIdx = (demoState.scenarioIdx + 1) % DEMO_SCENARIOS.length
   }
   demoState.isResolved = false
-
-  try {
-    sessionStorage.setItem('healthtechops_scenario_idx', demoState.scenarioIdx.toString())
-    sessionStorage.setItem('healthtechops_is_resolved', 'false')
-  } catch {}
+  const nextScenario = DEMO_SCENARIOS[demoState.scenarioIdx % DEMO_SCENARIOS.length]
+  demoState.pendingRemediations = createDefaultPendingList(nextScenario)
+  saveDemoState()
 
   // Dispatch custom window event so listeners can re-query
   if (typeof window !== 'undefined') {
@@ -299,9 +447,16 @@ export function resolveCurrentAnomaly(actionName?: string): void {
   demoState.isResolved = true
   const scenario = getCurrentScenario()
 
+  // Remove matching pending item if any
+  const act = actionName || scenario.remediationAction
+  const pIdx = demoState.pendingRemediations.findIndex((r) => r.action_name === act)
+  if (pIdx !== -1) {
+    demoState.pendingRemediations.splice(pIdx, 1)
+  }
+
   demoState.history.unshift({
     id: `rem-exec-${Date.now()}`,
-    action_name: actionName || scenario.remediationAction,
+    action_name: act,
     status: 'COMPLETED',
     risk_level: scenario.riskLevel,
     incident_id: scenario.incidentId,
@@ -309,16 +464,14 @@ export function resolveCurrentAnomaly(actionName?: string): void {
     executed_at: new Date().toISOString(),
     recovery_verified: true,
     result: {
-      action: actionName || scenario.remediationAction,
+      action: act,
       service: scenario.serviceName,
       status: 'SUCCESS',
       telemetry: 'All SLO thresholds normalized. Error rate 0.00%.',
     },
   })
 
-  try {
-    sessionStorage.setItem('healthtechops_is_resolved', 'true')
-  } catch {}
+  saveDemoState()
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('healthtechops-state-changed'))
@@ -503,21 +656,7 @@ export function getDemoInvestigation(invId?: string, incId?: string) {
 
 // Get Pending Remediation Queue
 export function getDemoPendingRemediations() {
-  if (demoState.isResolved) {
-    return []
-  }
-  const scenario = getCurrentScenario()
-  return [
-    {
-      id: `rem-pending-${scenario.incidentId}`,
-      action_name: scenario.remediationAction,
-      incident_id: scenario.incidentId,
-      risk_level: scenario.riskLevel,
-      status: 'PENDING_APPROVAL',
-      requested_at: new Date(Date.now() - 5 * 60000).toISOString(),
-      requested_by: 'admin@healthtechops.local',
-    },
-  ]
+  return demoState.pendingRemediations
 }
 
 // Get Remediation History
