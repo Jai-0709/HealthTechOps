@@ -177,9 +177,12 @@ export function Automation() {
   const approve = useMutation({
     mutationFn: (id: string) => api.post(`/remediation/${id}/approve`),
     onSuccess: () => {
-      toast.success('Remediation approved and executed')
+      toast.success('Remediation approved and executed — microservice recovered')
       qc.invalidateQueries({ queryKey: ['remediation-pending'] })
       qc.invalidateQueries({ queryKey: ['remediation-all'] })
+      qc.invalidateQueries({ queryKey: ['overview'] })
+      qc.invalidateQueries({ queryKey: ['services'] })
+      qc.invalidateQueries({ queryKey: ['incidents'] })
     },
     onError: (e: any) => toast.error(e.message || 'Approval failed'),
   })
@@ -190,6 +193,7 @@ export function Automation() {
       toast.success('Remediation rejected')
       qc.invalidateQueries({ queryKey: ['remediation-pending'] })
       qc.invalidateQueries({ queryKey: ['remediation-all'] })
+      qc.invalidateQueries({ queryKey: ['overview'] })
     },
     onError: (e: any) => toast.error(e.message || 'Rejection failed'),
   })
@@ -197,10 +201,13 @@ export function Automation() {
   const executeRunbook = useMutation({
     mutationFn: (runbookId: string) => api.post(`/runbooks/${runbookId}/execute`, {}),
     onSuccess: () => {
-      toast.success('Runbook execution requested; queued in Pending Approvals')
+      toast.success('Runbook execution executed successfully — service restored')
       qc.invalidateQueries({ queryKey: ['remediation-pending'] })
       qc.invalidateQueries({ queryKey: ['remediation-all'] })
-      setTab('Pending Approvals')
+      qc.invalidateQueries({ queryKey: ['overview'] })
+      qc.invalidateQueries({ queryKey: ['services'] })
+      qc.invalidateQueries({ queryKey: ['incidents'] })
+      setTab('Execution History')
     },
     onError: (e: any) => toast.error(e.message || 'Runbook trigger failed'),
   })

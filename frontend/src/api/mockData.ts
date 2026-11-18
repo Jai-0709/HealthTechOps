@@ -1,3 +1,29 @@
+import {
+  getDemoServices,
+  getDemoOverview,
+  getDemoIncidents,
+  getDemoInvestigation,
+  getDemoPendingRemediations,
+  getDemoRemediationHistory,
+  resolveCurrentAnomaly,
+  getCurrentScenario,
+  triggerSimulateAnomaly,
+  getDemoState,
+} from './demoSimulation'
+
+export {
+  getDemoServices,
+  getDemoOverview,
+  getDemoIncidents,
+  getDemoInvestigation,
+  getDemoPendingRemediations,
+  getDemoRemediationHistory,
+  resolveCurrentAnomaly,
+  getCurrentScenario,
+  triggerSimulateAnomaly,
+  getDemoState,
+}
+
 // Synthetic Demo / Offline Fallback Data for HealthTechOps Portfolio Presentation
 // Ensures zero downtime, zero blank dashes, and zero 404/405 errors when hosted standalone on Vercel
 
@@ -459,53 +485,12 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
 
   // Overview Dashboard (Must return exact shape Overview.tsx consumes)
   if (clean === '/overview') {
-    return {
-      services: {
-        total: 6,
-        healthy: 5,
-        degraded: 1,
-        down: 0,
-      },
-      incidents: {
-        open: 1,
-        critical: 0,
-      },
-      system_health: 'DEGRADED',
-      recent_incidents: [
-        {
-          id: 'inc-001',
-          title: 'Pharmacy Service Elevated P95 Latency',
-          severity: 'HIGH',
-          status: 'INVESTIGATING',
-          detected_at: new Date(Date.now() - 42 * 60000).toISOString(),
-          service_id: '3',
-          service_name: 'Pharmacy Service',
-        },
-        {
-          id: 'inc-002',
-          title: 'Provider Portal Transient 502 Bad Gateway',
-          severity: 'MEDIUM',
-          status: 'RESOLVED',
-          detected_at: new Date(Date.now() - 24 * 3600000).toISOString(),
-          service_id: '2',
-          service_name: 'Provider Portal',
-        },
-        {
-          id: 'inc-003',
-          title: 'Claims API Spike in 429 Rate Limits',
-          severity: 'LOW',
-          status: 'CLOSED',
-          detected_at: new Date(Date.now() - 72 * 3600000).toISOString(),
-          service_id: '1',
-          service_name: 'Claims API',
-        },
-      ],
-    } as T
+    return getDemoOverview() as T
   }
 
   // Services Catalog
   if (clean === '/services') {
-    return MOCK_SERVICES as T
+    return getDemoServices() as T
   }
   if (clean.startsWith('/services/')) {
     const parts = clean.split('/')
@@ -519,19 +504,20 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
       ] as T
     }
     if (clean.endsWith('/inject-failure')) {
+      triggerSimulateAnomaly()
       return { success: true, message: 'Synthetic failure injected into microservice', service: slug } as T
     }
-    const found = MOCK_SERVICES.find((s) => s.slug === slug) || MOCK_SERVICES[0]
+    const found = getDemoServices().find((s) => s.slug === slug) || getDemoServices()[0]
     return found as T
   }
 
   // Incidents
   if (clean === '/incidents') {
-    return MOCK_INCIDENTS as T
+    return getDemoIncidents() as T
   }
   if (clean.startsWith('/incidents/')) {
     const id = clean.split('/')[2]
-    const inc = MOCK_INCIDENTS.find((i) => i.id === id) || MOCK_INCIDENTS[0]
+    const inc = getDemoIncidents().find((i) => i.id === id) || getDemoIncidents()[0]
     return inc as T
   }
 
@@ -550,71 +536,44 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
     } as T
   }
   if (clean === '/ai/investigate' && method === 'POST') {
+    const scenario = getCurrentScenario()
     return {
-      id: 'inv-001',
-      investigation_id: 'inv-001',
+      id: `inv-${scenario.incidentId}`,
+      investigation_id: `inv-${scenario.incidentId}`,
       status: 'COMPLETED',
     } as T
   }
   if (clean === '/ai/investigate' || clean.startsWith('/ai/investigate/')) {
-    return {
-      id: 'inv-001',
-      investigation_id: 'inv-001',
-      incident_id: 'inc-001',
-      model_name: 'llama3.2',
-      status: 'COMPLETED',
-      root_cause_summary:
-        'Sustained thread blockage observed in connection pooling layer following high-volume batch dispatch. Worker threads reached maximum timeout waiting for idle database connections.',
-      evidence_items: [
-        'P95 latency elevated to 180.5ms (target: 100ms)',
-        'Active database pool connections saturated at 98% capacity',
-        'Error rate increased by 3.8% across claims adjudication endpoints',
-        'Zero container hardware crashes observed across worker nodes',
-      ],
-      recommended_actions: ['restart_service', 'flush_connection_pool', 'scale_up_replicas'],
-      confidence_score: 0.94,
-      started_at: new Date(Date.now() - 10 * 60000).toISOString(),
-      completed_at: new Date(Date.now() - 9 * 60000).toISOString(),
-    } as T
+    const invId = clean.startsWith('/ai/investigate/') ? clean.split('/')[3] : undefined
+    return getDemoInvestigation(invId) as T
   }
 
   // Remediation & Approvals
   if (clean === '/remediation/request') {
+    const scenario = getCurrentScenario()
     return {
-      id: `rem-${Date.now()}`,
-      action_name: 'restart_service',
-      incident_id: 'inc-001',
-      risk_level: 'MEDIUM',
+      id: `rem-pending-${scenario.incidentId}`,
+      action_name: scenario.remediationAction,
+      incident_id: scenario.incidentId,
+      risk_level: scenario.riskLevel,
       status: 'PENDING_APPROVAL',
       requested_at: new Date().toISOString(),
       requested_by: 'admin@healthtechops.local',
     } as T
   }
   if (clean === '/remediation/pending') {
-    return MOCK_REMEDIATION_PENDING as T
+    return getDemoPendingRemediations() as T
   }
   if (clean === '/remediation' || clean.startsWith('/remediation/')) {
-    if (clean.endsWith('/approve') || clean.endsWith('/reject')) {
+    if (clean.endsWith('/approve')) {
+      const scenario = getCurrentScenario()
+      resolveCurrentAnomaly(scenario.remediationAction)
       return { success: true, status: 'APPROVED', executed: true, timestamp: new Date().toISOString() } as T
     }
-    return [
-      {
-        id: 'rem-hist-01',
-        action_name: 'restart_service',
-        status: 'COMPLETED',
-        executed_at: new Date(Date.now() - 3600000).toISOString(),
-        completed_at: new Date(Date.now() - 3550000).toISOString(),
-        recovery_verified: true,
-      },
-      {
-        id: 'rem-hist-02',
-        action_name: 'rollback_deployment',
-        status: 'COMPLETED',
-        executed_at: new Date(Date.now() - 86400000).toISOString(),
-        completed_at: new Date(Date.now() - 86300000).toISOString(),
-        recovery_verified: true,
-      },
-    ] as T
+    if (clean.endsWith('/reject')) {
+      return { success: true, status: 'REJECTED', executed: false, timestamp: new Date().toISOString() } as T
+    }
+    return getDemoRemediationHistory() as T
   }
 
   // Runbooks
@@ -622,7 +581,11 @@ export function getMockFallback<T>(path: string, method: string = 'GET', _body?:
     return MOCK_RUNBOOKS as T
   }
   if (clean.startsWith('/runbooks/') && clean.endsWith('/execute')) {
-    return { success: true, status: 'EXECUTING', steps_total: 5, steps_completed: 1 } as T
+    const parts = clean.split('/')
+    const rbId = parts[2]
+    const rb = MOCK_RUNBOOKS.find((r) => r.id === rbId)
+    resolveCurrentAnomaly(rb?.name)
+    return { success: true, status: 'EXECUTING', steps_total: 5, steps_completed: 5, executed: true } as T
   }
 
   // SLO & MTTx Metrics

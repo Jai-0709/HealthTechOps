@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
 import { api } from '../api/client'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
@@ -11,6 +11,7 @@ import { Bot, AlertCircle, CheckCircle, Loader, XCircle, ShieldCheck, Terminal, 
 import { toast } from 'sonner'
 
 export function AIInvestigation() {
+  const qc = useQueryClient()
   const [searchParams] = useSearchParams()
   const preselect = searchParams.get('incident_id')
   const [selectedId, setSelectedId] = useState(preselect || '')
@@ -53,6 +54,7 @@ export function AIInvestigation() {
       }),
     onSuccess: (res: any) => {
       toast.success(`Action '${res.action_name}' queued for human review in Automation queue`)
+      qc.invalidateQueries({ queryKey: ['remediation-pending'] })
     },
     onError: (e: any) => toast.error(e.message || 'Failed to queue remediation'),
   })

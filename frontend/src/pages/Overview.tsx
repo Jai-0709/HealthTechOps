@@ -1,20 +1,46 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api/client'
+import { triggerSimulateAnomaly } from '../api/demoSimulation'
+import { toast } from 'sonner'
 import { MetricCard } from '../components/ui/MetricCard'
 import { Card, CardHeader, CardTitle, CardDescription } from '../components/ui/Card'
 import { Table, Thead, Tbody, Tr, Th, Td } from '../components/ui/Table'
 import { SeverityBadge, StatusBadge } from '../components/ui/Badge'
 import { formatDate } from '../lib/utils'
-import { Server, AlertTriangle, Activity, CheckCircle, ArrowRight, ShieldCheck, Cpu, Search } from 'lucide-react'
+import { Server, AlertTriangle, Activity, CheckCircle, ArrowRight, ShieldCheck, Cpu, Search, Zap } from 'lucide-react'
 
 export function Overview() {
   const navigate = useNavigate()
+  const qc = useQueryClient()
   const { data, isLoading } = useQuery({
     queryKey: ['overview'],
     queryFn: () => api.get<any>('/overview'),
     refetchInterval: 15000,
   })
+
+  // Synchronize state across window events
+  useEffect(() => {
+    const onStateChange = () => {
+      qc.invalidateQueries({ queryKey: ['overview'] })
+      qc.invalidateQueries({ queryKey: ['services'] })
+      qc.invalidateQueries({ queryKey: ['incidents'] })
+    }
+    window.addEventListener('healthtechops-state-changed', onStateChange)
+    return () => window.removeEventListener('healthtechops-state-changed', onStateChange)
+  }, [qc])
+
+  const handleSimulateAnomaly = () => {
+    const nextScenario = triggerSimulateAnomaly()
+    qc.invalidateQueries({ queryKey: ['overview'] })
+    qc.invalidateQueries({ queryKey: ['services'] })
+    qc.invalidateQueries({ queryKey: ['incidents'] })
+    qc.invalidateQueries({ queryKey: ['remediation-pending'] })
+    toast.warning(`Simulated Degradation: ${nextScenario.serviceName}`, {
+      description: `${nextScenario.incidentTitle}. Ready for AI triage.`,
+    })
+  }
 
   const sv = Array.isArray(data?.services)
     ? {
@@ -70,7 +96,15 @@ export function Overview() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={handleSimulateAnomaly}
+            className="px-3.5 py-2 text-xs font-medium rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 transition-colors inline-flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-2xs"
+            title="Simulate service degradation anomaly for interview presentation"
+          >
+            <Zap size={13} className="text-amber-500 fill-amber-500/30" />
+            <span>{sv?.degraded === 0 && sv?.down === 0 ? 'Simulate Degradation' : 'Degrade Next Service'}</span>
+          </button>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-omni-search'))}
             className="px-3.5 py-2 text-xs font-medium rounded-lg border border-[var(--hairline)] bg-[var(--surface-soft)] hover:bg-[var(--surface-card)] text-[var(--ink)] transition-colors inline-flex items-center gap-1.5 active:scale-95 cursor-pointer"
