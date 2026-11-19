@@ -306,11 +306,11 @@ HealthTechOps/
 │   ├── prometheus/        # prometheus.yml + alerts.yml
 │   ├── grafana/           # Datasource + dashboard provisioning
 │   └── loki/              # Loki config
-├── .github/workflows/     # GitHub Actions CI
 ├── docker-compose.yml
+├── start_local.ps1        # One-command local development runner
+├── run_demo.py            # CLI incident triage demonstration
 ├── .env.example
-├── ARCHITECTURE.md
-└── SECURITY.md
+└── README.md
 ```
 
 ---
