@@ -50,6 +50,7 @@ backend/healthtechops.db*
 *.dll
 *.bin
 cloudflared.exe
+*.pdf
 
 # Logs
 *.log
